@@ -8,7 +8,7 @@ Yes! Well, actually, no. There's no profit in this. I'm doing this little hardwa
 With some potentiometers on the cart, and a user interface, it's possible to control the audio hardware to generate sounds and, in the best case, use the SNES as a musical instrument.
 
 # How?
-I developed a cartridge that connects an ARM cortex m7 MCU directly to the SNES CPU. This means, the ARM MCU simulates ROM and feeds the SNES CPOU with instructions and data. Also, the MCU reads potentiometers on the cart and converts those values to instructions for the SNES DSP.
+I developed a cartridge that connects an ARM cortex m7 MCU directly to the SNES CPU. This means, the ARM MCU simulates ROM and feeds the SNES CPU with instructions and data. Also, the MCU reads potentiometers on the cart and converts those values to instructions for the SNES DSP.
 
 # Where?
 Here: snesdrone.com
