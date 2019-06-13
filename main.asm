@@ -7,24 +7,23 @@
 .include "snes_init.asm"
 .include "sample_data.asm"
 
-;----------------------------------------------------------------------------
+;---------------|---------|------------|-------------------------------------
+;
 ; Set Accumulator to 16 bit
-;----------------------------------------------------------------------------
-.MACRO Accu_16bit
+;
+;---------------|---------|------------|-------------------------------------
+.macro Accu_16bit
+                REP       #%00100000
+.endm
 
-  REP #%00100000
-
-.ENDM
-;============================================================================
-
-;----------------------------------------------------------------------------
+;---------------|---------|------------|-------------------------------------
+;
 ; Set Accumulator to 8 bit
-;----------------------------------------------------------------------------
-.MACRO Accu_8bit
-
-  SEP #%00100000
-
-.ENDM
+;
+;---------------|---------|------------|-------------------------------------
+.macro Accu_8bit
+                SEP       #%00100000
+.endm
 
 ;---------------|---------|------------|-------------------------------------
 ;
@@ -37,344 +36,289 @@ spc_wait_boot:  LDA       #$AA
   wait1:        CMP       $2140
                 BNE       wait1
 
-               ;Clear in case it already has $CC in it
-               ;(this actually occurred in testing)
-               STA        $2140
+                ;Clear in case it already has $CC in it
+                ;(this actually occurred in testing)
+                STA       $2140
 
-               LDA        #$BB
-  wait2:       CMP        $2141
-               BNE        wait2
+                LDA       #$BB
+  wait2:        CMP       $2141
+                BNE       wait2
 
-               RTS
+                RTS
                
 ;---------------|---------|------------|-------------------------------------
 ;
 ; 
 ;
 ;---------------|---------|------------|-------------------------------------
-
-ch1_go:  LDA       $00
+ch1_go:         LDA       $00
                 XBA
                 LDA       $1000
                 XBA
-    ORA  #$0000
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1001
-  XBA
-  ORA  #$0001
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1002
-  XBA
-  ORA  #$0002
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1003
-  XBA
-  ORA  #$0003
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1004
-  XBA
-  ORA  #$0004
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1005
-  XBA
-  ORA  #$0005
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1006
-  XBA
-  ORA  #$0006
-  TAX
-  JSR    write_dsp
-               RTS
+                ORA       #$0000
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1001
+                XBA
+                ORA       #$0001
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1002
+                XBA
+                ORA       #$0002
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1003
+                XBA
+                ORA       #$0003
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1004
+                XBA
+                ORA       #$0004
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1005
+                XBA
+                ORA       #$0005
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1006 
+                XBA
+                ORA       #$0006
+                TAX
+                JSR       write_dsp
+                RTS
 
-;----------------------------------------------------------------------------
+;---------------|---------|------------|-------------------------------------
+;
 ; Write Channel 2 Data
-;----------------------------------------------------------------------------
-ch2_go:
-  LDA  $00
-  XBA
-  LDA  $1010
-  XBA
-  ORA  #$0010
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1011
-  XBA
-  ORA  #$0011
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1012
-  XBA
-  ORA  #$0012
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1013
-  XBA
-  ORA  #$0013
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1014
-  XBA
-  ORA  #$0014
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1015
-  XBA
-  ORA  #$0015
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1016
-  XBA
-  ORA  #$0016
-  TAX
-  JSR    write_dsp
-rts
+;
+;---------------|---------|------------|-------------------------------------
+ch2_go:         LDA       $00
+                XBA
+                LDA       $1010
+                XBA
+                ORA       #$0010
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1011
+                XBA
+                ORA       #$0011
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1012
+                XBA
+                ORA       #$0012
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1013
+                XBA
+                ORA       #$0013
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1014
+                XBA
+                ORA       #$0014
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1015
+                XBA
+                ORA       #$0015
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1016
+                XBA
+                ORA       #$0016
+                TAX
+                JSR       write_dsp
+                RTS
 
-;----------------------------------------------------------------------------
+;---------------|---------|------------|-------------------------------------
+;
 ; Write Channel 3 Data
-;----------------------------------------------------------------------------
-ch3_go:
-  LDA  $00
-  XBA
-  LDA  $1020
-  XBA
-  ORA  #$0020
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1021
-  XBA
-  ORA  #$0021
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1022
-  XBA
-  ORA  #$0022
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1023
-  XBA
-  ORA  #$0023
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1024
-  XBA
-  ORA  #$0024
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1025
-  XBA
-  ORA  #$0025
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1026
-  XBA
-  ORA  #$0026
-  TAX
-  JSR    write_dsp
+;
+;---------------|---------|------------|-------------------------------------
+ch3_go:         RTS
 
-rts
-
-;----------------------------------------------------------------------------
+;---------------|---------|------------|-------------------------------------
+;
 ; Write Master Channel Data
-;----------------------------------------------------------------------------
-master_go:
-  LDA  $00
-  XBA
-  LDA  $1083
-  XBA
-  ORA  #$005D
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1084
-  XBA
-  ORA  #$003D
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1085
-  XBA
-  ORA  #$004D
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1080
-  XBA
-  ORA  #$006C
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1082
-  XBA
-  ORA  #$005C
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1081
-  XBA
-  ORA  #$004C
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1088
-  XBA
-  ORA  #$002C
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1089
-  XBA
-  ORA  #$003C
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1086
-  XBA
-  ORA  #$000C
-  TAX
-  JSR    write_dsp
-  LDA  $00
-  XBA
-  LDA  $1087
-  XBA
-  ORA  #$001C
-  TAX
-  JSR    write_dsp
-rts
+;
+;---------------|---------|------------|-------------------------------------
+master_go:      LDA       $00
+                XBA
+                LDA       $1083
+                XBA
+                ORA       #$005D
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1084
+                XBA
+                ORA       #$003D
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1085
+                XBA
+                ORA       #$004D
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1080
+                XBA
+                ORA       #$006C
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1082
+                XBA
+                ORA       #$005C
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1081
+                XBA
+                ORA       #$004C
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1088
+                XBA
+                ORA       #$002C
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1089
+                XBA
+                ORA       #$003C
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1086
+                XBA
+                ORA       #$000C
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1087
+                XBA
+                ORA       #$001C
+                TAX
+                JSR       write_dsp
+                RTS
 
-;----------------------------------------------------------------------------
-; Starts upload to SPC addr Y and sets Y to
-; 0 for use as index with spc_upload_byte.
-; Preserved: X
-;----------------------------------------------------------------------------
+;---------------|---------|------------|-------------------------------------
+;
+; Starts upload to SPC
+;
+;---------------|---------|------------|-------------------------------------
 spc_begin_upload:
-  STY    $2142
+                STY       $2142
 
-  ;Send command
-  LDA    $2140
-  CLC
-  ADC    #$22
-  BNE    skip		;special case fully verified
-  INA
-skip:
-  STA    $2141
-  STA    $2140
+                ;Send command
+                LDA       $2140
+                CLC
+                ADC       #$22
+                BNE       skip         ;special case fully verified
+                INA
+  skip:         STA       $2141
+                STA       $2140
 
-  ;Wait for acknowledgement
-wait3:
-  CMP    $2140
-  BNE    wait3
+                ;Wait for acknowledgement
+  wait3:        CMP       $2140
+                BNE       wait3
 
-  ;Initialize index
-  LDY    #0
+                ;Initialize index
+                LDY       #0
+                RTS
 
-  rts
-
-;----------------------------------------------------------------------------
-; Uploads byte A to SPC and increments Y. The low byte
-; of Y must not changed between calls.
-; Preserved: X
-;----------------------------------------------------------------------------
+;---------------|---------|------------|-------------------------------------
+;
+; Uploads byte A to SPC and increments Y.
+;
+;---------------|---------|------------|-------------------------------------
 spc_upload_byte:
-  STA    $2141
+                STA       $2141
 
-  ;Signal that it's ready
-  TYA
-  STA    $2140
-  INY
+                ;Signal that it's ready
+                TYA
+                STA       $2140
+                INY
 
-  ;Wait for acknowledgement
-wait4:
-  CMP    $2140
-  BNE    wait4
+                ;Wait for acknowledgement
+  wait4:        CMP       $2140
+                BNE       wait4
+                RTS
 
-  rts
-
-;----------------------------------------------------------------------------
+;---------------|---------|------------|-------------------------------------
+;
 ; Starts executing at SPC addr Y
-; Preserved: X, Y
-;----------------------------------------------------------------------------
-spc_execute:
-  STY    $2142
+;
+;---------------|---------|------------|-------------------------------------
+spc_execute:    STY       $2142
 
-  STZ    $2141
+                STZ       $2141
 
-  LDA    $2140
-  CLC
-  ADC    #$22
-  STA    $2140
+                LDA       $2140
+                CLC
+                ADC       #$22
+                STA       $2140
 
-  ;Wait for acknowledgement
-wait5:
-  CMP    $2140
-  BNE    wait5
+                ;Wait for acknowledgement
+  wait5:        CMP       $2140
+                BNE       wait5
+                RTS
 
-  rts
-
-;----------------------------------------------------------------------------
-; Writes high byte of X to SPC-700 DSP register in low byte of X
-;----------------------------------------------------------------------------
-write_dsp:
-  PHX
-  ;Just do a two-byte upload to $00F2-$00F3, so we
-  ;set the DSP address, then write the byte into that.
-  LDY    #$00F2
-  JSR    spc_begin_upload
-  PLA
-  JSR    spc_upload_byte	;low byte of X to $F2
-  PLA
-  JSR    spc_upload_byte	;high byte of X to $F3
-    
-  rts
+;---------------|---------|------------|-------------------------------------
+;
+; Writes high byte of X to SPC-700 DSP register
+;
+;---------------|---------|------------|-------------------------------------
+write_dsp:      PHX
+                ;Just do a two-byte upload to $00F2-$00F3, so we
+                ;set the DSP address, then write the byte into that.
+                LDY       #$00F2
+                JSR       spc_begin_upload
+                PLA
+                JSR       spc_upload_byte ;low byte of X to $F2
+                PLA
+                JSR       spc_upload_byte ;high byte of X to $F3
+                RTS
 .ends
 
 ;---------------|---------|------------|-------------------------------------
@@ -556,187 +500,187 @@ Start:          InitSNES               ;Initialize the SNES.
                 CPY       #sample_end - sample
                 BNE       loop
   
-                LDA       #$7F		   ;Ch1 - Left Channel Volume
+                LDA       #$7F         ;Ch1 - Left Channel Volume
                 STA       $1000
-                LDA       #$7F			 ; Ch1 - Right Channel Volume
+                LDA       #$7F         ;Ch1 - Right Channel Volume
                 STA       $1001
-                LDA       #$00			; Ch1 - Lower 8 bits of Pitch
+                LDA       #$00         ;Ch1 - Lower 8 bits of Pitch
                 STA       $1002
-                LDA       #$01			; Ch1 - Higher 8 bits of Pitch
+                LDA       #$01         ;Ch1 - Higher 8 bits of Pitch
                 STA       $1003
-                LDA       #$00			; Ch1 - Source
+                LDA       #$00         ;Ch1 - Source
                 STA       $1004
-                LDA       #$FF			; Ch1 - ADSR1
+                LDA       #$FF         ;Ch1 - ADSR1
                 STA       $1005
-                LDA       #$E0			; Ch1 - ADSR2
+                LDA       #$E0         ;Ch1 - ADSR2
                 STA       $1006
-                LDA       #$01			; Ch1 - Key ON
+                LDA       #$01         ;Ch1 - Key ON
                 STA       $1007
-                LDA       #$00			; Ch1 - Pitch Modulation
+                LDA       #$00         ;Ch1 - Pitch Modulation
                 STA       $1008
-                LDA       #$00			; Ch1 - Noise Enable
+                LDA       #$00         ;Ch1 - Noise Enable
                 STA       $1009
-                LDA       #$00			; Ch1 - Echo Enable
+                LDA       #$00         ;Ch1 - Echo Enable
                 STA       $100A
-                LDA       #$7F			; Ch2 - Left Channel Volume
+                LDA       #$7F         ;Ch2 - Left Channel Volume
                 STA       $1010
-                LDA  #$7F			; Ch2 - Right Channel Volume
-                STA  $1011
-                LDA  #$00			; Ch2 - Lower 8 bits of Pitch
-                STA  $1012
-                LDA  #$01			; Ch2 - Higher 8 bits of Pitch
-                STA  $1013
-                LDA  #$00			; Ch2 - Source
-                STA  $1014
-                LDA  #$FF			; Ch2 - ADSR1
-                STA  $1015
-                LDA  #$E0			; Ch2 - ADSR2
-                STA  $1016
-                LDA  #$01			; Ch2 - Key ON
-                STA  $1017
-                LDA  #$00			; Ch2 - Pitch Modulation
-                STA  $1018
-                LDA  #$00			; Ch2 - Noise Enable
-                STA  $1019
-                LDA  #$00			; Ch2 - Echo Enable
-                STA  $101A
-                LDA  #$7F			; Ch3 - Left Channel Volume
-                STA  $1020
-                LDA  #$7F			; Ch3 - Right Channel Volume
-                STA  $1021
-                LDA  #$00			; Ch3 - Lower 8 bits of Pitch
-                STA  $1022
-                LDA  #$01			; Ch3 - Higher 8 bits of Pitch
-                STA  $1023
-                LDA  #$00			; Ch3 - Source
-                STA  $1024
-                LDA  #$FF			; Ch3 - ADSR1
-                STA  $1025
-                LDA  #$E0			; Ch3 - ADSR2
-                STA  $1026
-                LDA  #$00			; Ch3 - Key ON
-                STA  $1027
-                LDA  #$00			; Ch3 - Pitch Modulation
-                STA  $1028
-                LDA  #$00			; Ch3 - Noise Enable
-                STA  $1029
-                LDA  #$00			; Ch3 - Echo Enable
-                STA  $102A
-                LDA  #$7F			; Ch4 - Left Channel Volume
-                STA  $1030
-                LDA  #$7F			; Ch4 - Right Channel Volume
-                STA  $1031
-                LDA  #$00			; Ch4 - Lower 8 bits of Pitch
-                STA  $1032
-                LDA  #$01			; Ch4 - Higher 8 bits of Pitch
-                STA  $1033
-                LDA  #$00			; Ch4 - Source
-                STA  $1034
-                LDA  #$FF			; Ch4 - ADSR1
-                STA  $1035
-                LDA  #$E0			; Ch4 - ADSR2
-                STA  $1036
-                LDA  #$00			; Ch4 - Key ON
-                STA  $1037
-                LDA  #$00			; Ch4 - Pitch Modulation
-                STA  $1038
-                LDA  #$00			; Ch4 - Noise Enable
-                STA  $1039
-                LDA  #$00			; Ch4 - Echo Enable
-                STA  $103A
+                LDA       #$7F         ;Ch2 - Right Channel Volume
+                STA       $1011
+                LDA       #$00         ;Ch2 - Lower 8 bits of Pitch
+                STA       $1012
+                LDA       #$01         ;Ch2 - Higher 8 bits of Pitch
+                STA       $1013
+                LDA       #$00         ;Ch2 - Source
+                STA       $1014
+                LDA       #$FF         ;Ch2 - ADSR1
+                STA       $1015
+                LDA       #$E0         ;Ch2 - ADSR2
+                STA       $1016
+                LDA       #$01         ;Ch2 - Key ON
+                STA       $1017
+                LDA       #$00         ;Ch2 - Pitch Modulation
+                STA       $1018
+                LDA       #$00         ;Ch2 - Noise Enable
+                STA       $1019
+                LDA       #$00         ;Ch2 - Echo Enable
+                STA       $101A
+                LDA       #$7F         ;Ch3 - Left Channel Volume
+                STA       $1020
+                LDA       #$7F         ;Ch3 - Right Channel Volume
+                STA       $1021
+                LDA       #$00         ;Ch3 - Lower 8 bits of Pitch
+                STA       $1022
+                LDA       #$01         ;Ch3 - Higher 8 bits of Pitch
+                STA       $1023
+                LDA       #$00         ;Ch3 - Source
+                STA       $1024
+                LDA       #$FF         ;Ch3 - ADSR1
+                STA       $1025
+                LDA       #$E0         ;Ch3 - ADSR2
+                STA       $1026
+                LDA       #$00         ;Ch3 - Key ON
+                STA       $1027
+                LDA       #$00         ;Ch3 - Pitch Modulation
+                STA       $1028
+                LDA       #$00         ;Ch3 - Noise Enable
+                STA       $1029
+                LDA       #$00         ;Ch3 - Echo Enable
+                STA       $102A
+                LDA       #$7F         ;Ch4 - Left Channel Volume
+                STA       $1030
+                LDA       #$7F         ;Ch4 - Right Channel Volume
+                STA       $1031
+                LDA       #$00         ;Ch4 - Lower 8 bits of Pitch
+                STA       $1032
+                LDA       #$01         ;Ch4 - Higher 8 bits of Pitch
+                STA       $1033
+                LDA       #$00         ;Ch4 - Source
+                STA       $1034
+                LDA       #$FF         ;Ch4 - ADSR1
+                STA       $1035
+                LDA       #$E0         ;Ch4 - ADSR2
+                STA       $1036
+                LDA       #$00         ;Ch4 - Key ON
+                STA       $1037
+                LDA       #$00         ;Ch4 - Pitch Modulation
+                STA       $1038
+                LDA       #$00         ;Ch4 - Noise Enable
+                STA       $1039
+                LDA       #$00         ;Ch4 - Echo Enable
+                STA       $103A
                 
-                LDA  #$20			; Master - DSP Flags
-                STA  $1080
-                LDA  #$00
-                STA  $1081
-                LDA  $1037
+                LDA       #$20         ;Master - DSP Flags
+                STA       $1080
+                LDA       #$00
+                STA       $1081
+                LDA       $1037
                 ASL
                 ASL
                 ASL
-                ORA  $1081
-                STA  $1081
-                LDA  $1027
+                ORA       $1081
+                STA       $1081
+                LDA       $1027
                 ASL
                 ASL
-                ORA  $1081
-                STA  $1081
-                LDA  $1017
+                ORA       $1081
+                STA       $1081
+                LDA       $1017
                 ASL
-                ORA  $1081
-                STA  $1081
-                LDA  $1007
-                ORA  $1081
-                STA  $1081		; Master - Key On
-                EOR  #$FF			; Master - Key Off
-                STA  $1082
-                LDA  #$02			; Master - Offset
-                STA  $1083
-                LDA  #$00
-                STA  $1084
-                LDA  $1039
-                ASL
-                ASL
-                ASL
-                ORA  $1084
-                STA  $1084
-                LDA  $1029
-                ASL
-                ASL
-                ORA  $1084
-                STA  $1084
-                LDA  $1019
-                ASL
-                ORA  $1084
-                STA  $1084
-                LDA  $1009
-                ORA  $1084
-                STA  $1084		; Master - Noise
-                LDA  #$00
-                STA  $1085
-                LDA  $103A
+                ORA       $1081
+                STA       $1081
+                LDA       $1007
+                ORA       $1081
+                STA       $1081        ;Master - Key On
+                EOR       #$FF         ;Master - Key Off
+                STA       $1082
+                LDA       #$02         ;Master - Offset
+                STA       $1083
+                LDA       #$00
+                STA       $1084
+                LDA       $1039
                 ASL
                 ASL
                 ASL
-                ORA  $1085
-                STA  $1085
-                LDA  $102A
+                ORA       $1084
+                STA       $1084
+                LDA       $1029
                 ASL
                 ASL
-                ORA  $1085
-                STA  $1085
-                LDA  $101A
+                ORA       $1084
+                STA       $1084
+                LDA       $1019
                 ASL
-                ORA  $1085
-                STA  $1085
-                LDA  $100A
-                ORA  $1085
-                STA  $1085		; Master - Echo
-                LDA  #$7F			; Master - Volume L
-                STA  $1086
-                LDA  #$7F			; Master - Volume R
-                STA  $1087
-                LDA  #$00			; Master - Echo Vol L
-                STA  $1088
-                LDA  #$00			; Master - Echo Vol R
-                STA  $1089
+                ORA       $1084
+                STA       $1084
+                LDA       $1009
+                ORA       $1084
+                STA       $1084        ;Master - Noise
+                LDA       #$00
+                STA       $1085
+                LDA       $103A
+                ASL
+                ASL
+                ASL
+                ORA       $1085
+                STA       $1085
+                LDA       $102A
+                ASL
+                ASL
+                ORA       $1085
+                STA       $1085
+                LDA       $101A
+                ASL
+                ORA       $1085
+                STA       $1085
+                LDA       $100A
+                ORA       $1085
+                STA       $1085        ;Master - Echo
+                LDA       #$7F         ;Master - Volume L
+                STA       $1086
+                LDA       #$7F         ;Master - Volume R
+                STA       $1087
+                LDA       #$00         ;Master - Echo Vol L
+                STA       $1088
+                LDA       #$00         ;Master - Echo Vol R
+                STA       $1089
                 
-                jsr ch1_go
-                jsr ch2_go
-                jsr ch3_go
+                JSR       ch1_go
+                JSR       ch2_go
+                JSR       ch3_go
                 
-                jsr master_go
+                JSR       master_go
 
 
                 EnableNMI
 
   Forever:      WAI
-  Accu_16bit
-  LDA.W #$00FF
-  Accu_8bit
+                Accu_16bit
+                LDA.W     #$00FF
+                Accu_8bit
 
-    jsr ch1_go
-    jsr ch2_go
-    jsr ch3_go
+                JSR       ch1_go
+                JSR       ch2_go
+                JSR       ch3_go
                 
                 JMP       Forever
 .ends
