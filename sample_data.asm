@@ -4,8 +4,8 @@
 sample:
 ;.org $200
     ;directory:
-    .word $204      ; start
-    .word $204      ; loop
+    .word $0204      ; start
+    .word $0204      ; loop
 
     ;sample:
     ;sample_loop:

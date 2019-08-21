@@ -25,3 +25,5 @@ I use BSNES, since this project is very hardware based and uses some tricks that
 
 # What's next?
 * Make the GUI work
+
+test

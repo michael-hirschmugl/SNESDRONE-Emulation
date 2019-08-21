@@ -3,3 +3,4 @@ template.smc: main.asm link
 	wlalink -v link template.smc
 	rm main.obj
 	bsnes template.smc
+	rm template.smc

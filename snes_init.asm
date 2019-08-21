@@ -22,7 +22,7 @@
 ;---------------|---------|------------|-------------------------------------
 ; InitializeSNES -- This will be placed at $008000 (beginning of ROM)
 ;---------------|---------|------------|-------------------------------------
-.bank 0 slot 0
+.bank 0
 .org 0
 .section "InitializeSNESCode" force
 
