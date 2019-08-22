@@ -10,11 +10,19 @@
 
                 REP       #%00111000  ;mem/A = 16 bit, X/Y = 16 bit
                                       ;decimal mode off
-
-                LDX       #$1FFF      ;Setup the stack
+                                      
+                ;The VBlank Routine will be placed at the end of the first part
+                ;of WRAM. That's why the stack isn't initialized at the end of this
+                ;are for now.
+                LDX       #$1FFF      ;Setup the stack (normally $1FFF)
                 TXS                   ;Transfer Index X to Stack Pointer Register
 
                 JSL       $008000     ;do the rest of the initialization in a routine
+
+                ;Attention: The "old" stack is killed during initialization,
+                ;which means that a reset interrupt during execution might freeze the CPU
+                LDX       #$1DFF      ;Setup the stack
+                TXS                   ;Transfer Index X to Stack Pointer Register
 
                 SEP       #%00100000  ;mem/A = 8 bit
 .endm

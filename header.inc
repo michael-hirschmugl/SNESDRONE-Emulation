@@ -26,7 +26,7 @@
   COP EmptyHandler
   BRK EmptyHandler
   ABORT EmptyHandler
-  NMI VBlank
+  NMI $1E00              ;address in RAM where VBlank routine is copied from ROM
   IRQ EmptyHandler
 .ENDNATIVEVECTOR
 

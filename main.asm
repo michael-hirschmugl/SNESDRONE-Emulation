@@ -10,15 +10,17 @@
 .include "sample_data.asm"
 .include "dsp_stuff.asm"
 .include "misc.asm"
-;.include "dsp_ram_routines.asm"
+.include "dsp_array_values_sim.asm"
 
 ;---------------|---------|------------|-------------------------------------
 ;
-;
+; The VBlank Routine
+; This will be placed in RAM at 00:1E00-1FFF
 ;
 ;---------------|---------|------------|-------------------------------------
-.bank 0
-.section "VBlank"
+.bank 3
+.org 0
+.section "VBlank" force
 VBlank:         NMIIN                  ;A=8bit, X/Y=16bit
                 
 
@@ -34,7 +36,7 @@ VBlank:         NMIIN                  ;A=8bit, X/Y=16bit
 .section "MainCode"
 
 Start:          InitSNES               ;Initialize the SNES.
-                SEP       #$20         ;A=8bit, X/Y=16bit
+
                 LoadPalette BG_Palette, 0, 4  ;BG_Palette is in "palette.inc", 0 is the index of the first color, 4 is the amount of color to write.
                 LoadTiles   Tiles, $0000, 192 ;Tiles is in "tiles.inc", $0000 is the address in VRAM to start writing data, 192 is the amount of data in bytes.
 
@@ -63,6 +65,7 @@ Start:          InitSNES               ;Initialize the SNES.
                 CPY       #sample_end - sample
                 BNE       loop
   
+                ;Init DSP register buffer
                 InitDSPch1
                 InitDSPch2
                 InitDSPch3
@@ -70,19 +73,14 @@ Start:          InitSNES               ;Initialize the SNES.
                 InitDSPmaster
 
                 ;Let's load a whole ROM bank into RAM and execute from there... sweet
-                ;Only think is, we cannot overwrite the RAM mirror at 7E, so
+                ;Only thing is, we cannot overwrite the RAM mirror at 7E, so
                 ;let's start at 7F, easy!
                 Accu_16bit
-                LDX       #0
-  RAM_LOOP:
-                LDA       $028000,X
-                STA       $7F0000,X
-                INX
-                TXA
-                CMP       #$FFFF
-                BNE       RAM_LOOP
 
-                LDX       #0
+                ROM_2_RAM_LOOP
+
+                ROM_2_RAM_VBLANK
+
                 Accu_8bit
 
                 EnableNMI
@@ -109,15 +107,29 @@ Start:          InitSNES               ;Initialize the SNES.
 
 ;---------------|---------|------------|-------------------------------------
 ; 
-; little test for a ram routine
+; Loop Routine in RAM
 ; 
 ;---------------|---------|------------|-------------------------------------
 .bank 2
 .org 0
-.section "littletest" force
-test_routine:   WAI
+.section "RAM_LOOP" force
+test_routine:   ;PER       test_routine
+                WAI
                 LDA       $00000A
                 INA
                 STA       $00000A
+
+                UPDATE_DSP_RAM_REGS
+   PER       test_routine1
+ BRA testy_routy
+  test_routine1: NOP
+                
+
+
                 JMP       $0000
+
+testy_routy:
+                NOP
+                RTS
+
 .ends

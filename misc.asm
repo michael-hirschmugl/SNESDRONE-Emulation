@@ -59,3 +59,85 @@
 
                 SEP       #$20
 .endm
+
+;---------------|---------|------------|-------------------------------------
+;
+;
+;
+;---------------|---------|------------|-------------------------------------
+.macro  ROM_2_RAM_LOOP
+                LDX       #0
+  LOOP_2_RAM_LOOP:
+                LDA       $028000,X
+                STA       $7F0000,X
+                INX
+                TXA
+                CMP       #$FFFF
+                BNE       LOOP_2_RAM_LOOP
+.endm
+
+;---------------|---------|------------|-------------------------------------
+;
+;
+;
+;---------------|---------|------------|-------------------------------------
+.macro  ROM_2_RAM_VBLANK
+                LDX       #0
+  VBLA_2_RAM_LOOP:
+                LDA       $038000,X
+                STA       $001E00,X
+                INX
+                TXA
+                CMP       #$0200
+                BNE       VBLA_2_RAM_LOOP
+.endm
+
+;---------------|---------|------------|-------------------------------------
+;
+;
+;
+;---------------|---------|------------|-------------------------------------
+.macro  UPDATE_DSP_RAM_REGS
+                LDX       #2
+
+                LDY       #0
+  DSP_ARRAY_I1: LDA       $048000,X
+                STA       $1000,Y
+                INX
+                INY
+                TXA
+                CMP       #12
+                BNE       DSP_ARRAY_I1
+                LDY       #0
+  DSP_ARRAY_I2: LDA       $048000,X
+                STA       $100F,Y
+                INX
+                INY
+                TXA
+                CMP       #23
+                BNE       DSP_ARRAY_I2
+                LDY       #0
+  DSP_ARRAY_I3: LDA       $048000,X
+                STA       $101F,Y
+                INX
+                INY
+                TXA
+                CMP       #34
+                BNE       DSP_ARRAY_I3
+                LDY       #0
+  DSP_ARRAY_I4: LDA       $048000,X
+                STA       $102F,Y
+                INX
+                INY
+                TXA
+                CMP       #45
+                BNE       DSP_ARRAY_I4
+                LDY       #0
+  DSP_ARRAY_I5: LDA       $048000,X
+                STA       $107F,Y
+                INX
+                INY
+                TXA
+                CMP       #55
+                BNE       DSP_ARRAY_I5
+.endm
