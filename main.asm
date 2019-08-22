@@ -69,20 +69,27 @@ Start:          InitSNES               ;Initialize the SNES.
                 InitDSPch4
                 InitDSPmaster
 
-                ;JSR       ch1_go
-                ;JSR       ch2_go
-                ;JSR       ch3_go
-                
-                ;JSR       master_go
+                ;Let's load a whole ROM bank into RAM and execute from there... sweet
+                ;Only think is, we cannot overwrite the RAM mirror at 7E, so
+                ;let's start at 7F, easy!
+                Accu_16bit
+                LDX       #0
+  RAM_LOOP:
+                LDA       $028000,X
+                STA       $7F0000,X
+                INX
+                TXA
+                CMP       #$FFFF
+                BNE       RAM_LOOP
+
+                LDX       #0
+                Accu_8bit
 
                 EnableNMI
+                NMIIN
+                JML       $7F0000
+                NMIOUT
 
-  Forever:      WAI
-                ;JSR       ch1_go
-                ;JSR       ch2_go
-                ;JSR       ch3_go
-                
-                JMP       Forever
 .ends
 
 ;---------------|---------|------------|-------------------------------------
@@ -98,4 +105,19 @@ Start:          InitSNES               ;Initialize the SNES.
 .include "tiles.inc"
 .include "tilemap.inc"
 
+.ends
+
+;---------------|---------|------------|-------------------------------------
+; 
+; little test for a ram routine
+; 
+;---------------|---------|------------|-------------------------------------
+.bank 2
+.org 0
+.section "littletest" force
+test_routine:   WAI
+                LDA       $00000A
+                INA
+                STA       $00000A
+                JMP       $0000
 .ends
