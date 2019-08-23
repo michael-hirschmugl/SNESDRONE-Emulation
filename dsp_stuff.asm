@@ -75,4 +75,132 @@ write_dsp:      PHX
                 PLA
                 JSR       spc_upload_byte ;high byte of X to $F3
                 RTS
+
+;---------------|---------|------------|-------------------------------------
+;
+; Write Master Channel Data
+;
+;---------------|---------|------------|-------------------------------------
+master_go:      LDA       $00
+                XBA
+                LDA       $1083
+                XBA
+                ORA       #$005D
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1084
+                XBA
+                ORA       #$003D
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1085
+                XBA
+                ORA       #$004D
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1080
+                XBA
+                ORA       #$006C
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1082
+                XBA
+                ORA       #$005C
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1081
+                XBA
+                ORA       #$004C
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1088
+                XBA
+                ORA       #$002C
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1089
+                XBA
+                ORA       #$003C
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1086
+                XBA
+                ORA       #$000C
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1087
+                XBA
+                ORA       #$001C
+                TAX
+                JSR       write_dsp
+                RTS
+
 .ends
+
+;---------------|---------|------------|-------------------------------------
+;
+;
+;
+;---------------|---------|------------|-------------------------------------
+.macro  UPDATE_DSP_RAM_REGS
+                LDX       #2
+
+                LDY       #0
+  DSP_ARRAY_I1: LDA       $048000,X
+                STA       $1000,Y
+                INX
+                INY
+                TXA
+                CMP       #12
+                BNE       DSP_ARRAY_I1
+                LDY       #0
+  DSP_ARRAY_I2: LDA       $048000,X
+                STA       $100F,Y
+                INX
+                INY
+                TXA
+                CMP       #23
+                BNE       DSP_ARRAY_I2
+                LDY       #0
+  DSP_ARRAY_I3: LDA       $048000,X
+                STA       $101F,Y
+                INX
+                INY
+                TXA
+                CMP       #34
+                BNE       DSP_ARRAY_I3
+                LDY       #0
+  DSP_ARRAY_I4: LDA       $048000,X
+                STA       $102F,Y
+                INX
+                INY
+                TXA
+                CMP       #45
+                BNE       DSP_ARRAY_I4
+                LDY       #0
+  DSP_ARRAY_I5: LDA       $048000,X
+                STA       $107F,Y
+                INX
+                INY
+                TXA
+                CMP       #55
+                BNE       DSP_ARRAY_I5
+.endm
