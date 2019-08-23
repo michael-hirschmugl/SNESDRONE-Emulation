@@ -7,7 +7,6 @@
 .include "snes_init.asm"
 .include "video_init.asm"
 .include "dsp_init.asm"
-.include "sample_data.asm"
 .include "dsp_stuff.asm"
 .include "misc.asm"
 .include "dsp_array_values_sim.asm"
@@ -78,15 +77,216 @@ Start:          InitSNES               ;Initialize the SNES.
                 Accu_16bit
 
                 ROM_2_RAM_LOOP
-
                 ROM_2_RAM_VBLANK
 
                 Accu_8bit
+
+                JSR       ch1_go
+                JSR       ch2_go
+                JSR       ch3_go
+                
+                JSR       master_go
 
                 EnableNMI
                 NMIIN
                 JML       $7F0000
                 NMIOUT
+
+;---------------|---------|------------|-------------------------------------
+;
+; 
+;
+;---------------|---------|------------|-------------------------------------
+ch1_go:         LDA       $00
+                XBA
+                LDA       $1000
+                XBA
+                ORA       #$0000
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1001
+                XBA
+                ORA       #$0001
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1002
+                XBA
+                ORA       #$0002
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1003
+                XBA
+                ORA       #$0003
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1004
+                XBA
+                ORA       #$0004
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1005
+                XBA
+                ORA       #$0005
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1006 
+                XBA
+                ORA       #$0006
+                TAX
+                JSR       write_dsp
+                RTS
+
+;---------------|---------|------------|-------------------------------------
+;
+; Write Channel 2 Data
+;
+;---------------|---------|------------|-------------------------------------
+ch2_go:         LDA       $00
+                XBA
+                LDA       $1010
+                XBA
+                ORA       #$0010
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1011
+                XBA
+                ORA       #$0011
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1012
+                XBA
+                ORA       #$0012
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1013
+                XBA
+                ORA       #$0013
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1014
+                XBA
+                ORA       #$0014
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1015
+                XBA
+                ORA       #$0015
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1016
+                XBA
+                ORA       #$0016
+                TAX
+                JSR       write_dsp
+                RTS
+
+;---------------|---------|------------|-------------------------------------
+;
+; Write Channel 3 Data
+;
+;---------------|---------|------------|-------------------------------------
+ch3_go:         RTS
+
+;---------------|---------|------------|-------------------------------------
+;
+; Write Master Channel Data
+;
+;---------------|---------|------------|-------------------------------------
+master_go:      LDA       $00
+                XBA
+                LDA       $1083
+                XBA
+                ORA       #$005D
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1084
+                XBA
+                ORA       #$003D
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1085
+                XBA
+                ORA       #$004D
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1080
+                XBA
+                ORA       #$006C
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1082
+                XBA
+                ORA       #$005C
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1081
+                XBA
+                ORA       #$004C
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1088
+                XBA
+                ORA       #$002C
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1089
+                XBA
+                ORA       #$003C
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1086
+                XBA
+                ORA       #$000C
+                TAX
+                JSR       write_dsp
+                LDA       $00
+                XBA
+                LDA       $1087
+                XBA
+                ORA       #$001C
+                TAX
+                JSR       write_dsp
+                RTS
 
 .ends
 
@@ -108,28 +308,19 @@ Start:          InitSNES               ;Initialize the SNES.
 ;---------------|---------|------------|-------------------------------------
 ; 
 ; Loop Routine in RAM
+; This will be placed in RAM at 7F:0000-7F:FFFF
+; Whole ROM bank 2 takes up this space in RAM
 ; 
 ;---------------|---------|------------|-------------------------------------
 .bank 2
 .org 0
 .section "RAM_LOOP" force
-test_routine:   ;PER       test_routine
-                WAI
+RAM_LOOP:       WAI
                 LDA       $00000A
                 INA
                 STA       $00000A
 
                 UPDATE_DSP_RAM_REGS
-   PER       test_routine1
- BRA testy_routy
-  test_routine1: NOP
-                
-
 
                 JMP       $0000
-
-testy_routy:
-                NOP
-                RTS
-
 .ends

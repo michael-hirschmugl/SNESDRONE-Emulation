@@ -1,5 +1,6 @@
 .bank 0
 .section "DSPstuff"
+.include "sample_data.asm"
 ;---------------|---------|------------|-------------------------------------
 ;
 ; Waits for SPC to finish booting
