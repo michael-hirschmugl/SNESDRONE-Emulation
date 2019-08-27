@@ -1,6 +1,12 @@
 ;---------------|---------|------------|-------------------------------------
 ;
 ;
+; RAM map:
+; 00:1DFF          Stack Pointer
+; 00:1E00-00:1FFF  VBlank Routine
+; 7F:2400-7F:3300  Main Loop
+; 00:1000-00:108F  DSP Register Buffer
+; 00:0F00          Controller Input Buffer (max. 0100h 256 bytes)
 ;
 ;---------------|---------|------------|-------------------------------------
 .include "header.inc"
@@ -11,11 +17,12 @@
 .include "dsp_ram_routines.asm"
 .include "misc.asm"
 .include "dsp_array_values_sim.asm"
+.include "controller_input.asm"
 
 ;---------------|---------|------------|-------------------------------------
 ;
 ; The VBlank Routine
-; This will be placed in RAM at 00:1E00-1FFF
+; This will be placed in RAM at 00:1E00-1FFF (after Stack Pointer)
 ;
 ;---------------|---------|------------|-------------------------------------
 .bank 0
@@ -87,7 +94,9 @@ Start:          InitSNES               ;Initialize the SNES.
 
   ;loop_di_loop: JMP       loop_di_loop
 
-                EnableNMI
+                ;EnableNMI
+                STZ       $4016        ;Write a byte of nothing to $4016 (old style joypad register)
+                EnableNMIandAutoJoypad
                 NMIIN
                 JML       $7F2400
                 ;NMIOUT
@@ -112,8 +121,7 @@ Start:          InitSNES               ;Initialize the SNES.
 ;---------------|---------|------------|-------------------------------------
 ; 
 ; Loop Routine in RAM
-; This will be placed in RAM at 7F:0000-7F:FFFF
-; Whole ROM bank 2 takes up this space in RAM
+; This will be placed in RAM at 7F:2400-7F:3300
 ; 
 ;---------------|---------|------------|-------------------------------------
 .bank 0
@@ -128,6 +136,8 @@ RAM_LOOP:       WAI
                 UPDATE_DSP_CH3_REGS
                 UPDATE_DSP_CH4_REGS
                 UPDATE_DSP_MASTER_CH_REGS
+
+                JSL       Joypad_Ready
 
                 JMP       $2400
 .ends
