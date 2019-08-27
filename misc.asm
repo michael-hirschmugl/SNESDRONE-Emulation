@@ -68,11 +68,11 @@
 .macro  ROM_2_RAM_LOOP
                 LDX       #0
   LOOP_2_RAM_LOOP:
-                LDA       $028000,X
-                STA       $7F0000,X
+                LDA       $00A400,X
+                STA       $7F2400,X
                 INX
                 TXA
-                CMP       #$FFFF
+                CMP       #$0F00
                 BNE       LOOP_2_RAM_LOOP
 .endm
 
@@ -84,11 +84,11 @@
 .macro  ROM_2_RAM_VBLANK
                 LDX       #0
   VBLA_2_RAM_LOOP:
-                LDA       $038000,X
+                LDA       $00A000,X
                 STA       $001E00,X
                 INX
                 TXA
-                CMP       #$0200
+                CMP       #$0100
                 BNE       VBLA_2_RAM_LOOP
 .endm
 

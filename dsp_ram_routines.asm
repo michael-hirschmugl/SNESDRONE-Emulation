@@ -1,6 +1,6 @@
-.bank 2
-.org 0
-.section "DSP_RAM_routines"
+.bank 0
+.org 10240
+.section "DSP_RAM_routines" force
 ;---------------|---------|------------|-------------------------------------
 ;
 ; 

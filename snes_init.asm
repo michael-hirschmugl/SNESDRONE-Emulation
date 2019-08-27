@@ -17,7 +17,7 @@
                 LDX       #$1FFF      ;Setup the stack (normally $1FFF)
                 TXS                   ;Transfer Index X to Stack Pointer Register
 
-                JSL       $008000     ;do the rest of the initialization in a routine
+                JSL       $008400     ;do the rest of the initialization in a routine
 
                 ;Attention: The "old" stack is killed during initialization,
                 ;which means that a reset interrupt during execution might freeze the CPU
@@ -31,7 +31,7 @@
 ; InitializeSNES -- This will be placed at $008000 (beginning of ROM)
 ;---------------|---------|------------|-------------------------------------
 .bank 0
-.org 0
+.org 1024
 .section "InitializeSNESCode" force
 
 InitializeSNES: PHK                   ;set Data Bank = Program Bank

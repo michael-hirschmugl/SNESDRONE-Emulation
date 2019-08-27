@@ -1,5 +1,6 @@
 .bank 0
-.section "DMAPaletteandVRAM"
+.org 3072
+.section "DMAPaletteandVRAM" force
 ;---------------|---------|------------|-------------------------------------
 ;
 ;

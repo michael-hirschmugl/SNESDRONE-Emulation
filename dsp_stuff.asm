@@ -1,5 +1,6 @@
 .bank 0
-.section "DSPstuff"
+.org 4096
+.section "DSPstuff" force
 .include "sample_data.asm"
 ;---------------|---------|------------|-------------------------------------
 ;
@@ -164,7 +165,7 @@ master_go:      LDA       $00
                 LDX       #2
 
                 LDY       #0
-  DSP_ARRAY_I1: LDA       $048000,X
+  DSP_ARRAY_I1: LDA       $00C400,X
                 STA       $1000,Y
                 INX
                 INY
@@ -172,7 +173,7 @@ master_go:      LDA       $00
                 CMP       #12
                 BNE       DSP_ARRAY_I1
                 LDY       #0
-  DSP_ARRAY_I2: LDA       $048000,X
+  DSP_ARRAY_I2: LDA       $00C400,X
                 STA       $100F,Y
                 INX
                 INY
@@ -180,7 +181,7 @@ master_go:      LDA       $00
                 CMP       #23
                 BNE       DSP_ARRAY_I2
                 LDY       #0
-  DSP_ARRAY_I3: LDA       $048000,X
+  DSP_ARRAY_I3: LDA       $00C400,X
                 STA       $101F,Y
                 INX
                 INY
@@ -188,7 +189,7 @@ master_go:      LDA       $00
                 CMP       #34
                 BNE       DSP_ARRAY_I3
                 LDY       #0
-  DSP_ARRAY_I4: LDA       $048000,X
+  DSP_ARRAY_I4: LDA       $00C400,X
                 STA       $102F,Y
                 INX
                 INY
@@ -196,7 +197,7 @@ master_go:      LDA       $00
                 CMP       #45
                 BNE       DSP_ARRAY_I4
                 LDY       #0
-  DSP_ARRAY_I5: LDA       $048000,X
+  DSP_ARRAY_I5: LDA       $00C400,X
                 STA       $107F,Y
                 INX
                 INY

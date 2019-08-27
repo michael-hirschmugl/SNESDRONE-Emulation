@@ -18,8 +18,8 @@
 ; This will be placed in RAM at 00:1E00-1FFF
 ;
 ;---------------|---------|------------|-------------------------------------
-.bank 3
-.org 0
+.bank 0
+.org 8192
 .section "VBlank" force
 VBlank:         NMIIN                  ;A=8bit, X/Y=16bit
                 
@@ -33,7 +33,8 @@ VBlank:         NMIIN                  ;A=8bit, X/Y=16bit
 ; 
 ;---------------|---------|------------|-------------------------------------
 .bank 0
-.section "MainCode"
+.org 2048
+.section "MainCode" force
 
 Start:          InitSNES               ;Initialize the SNES.
 
@@ -84,10 +85,12 @@ Start:          InitSNES               ;Initialize the SNES.
 
                 JSR       master_go
 
+  ;loop_di_loop: JMP       loop_di_loop
+
                 EnableNMI
                 NMIIN
-                JML       $7F0000
-                NMIOUT
+                JML       $7F2400
+                ;NMIOUT
 
 .ends
 
@@ -96,9 +99,9 @@ Start:          InitSNES               ;Initialize the SNES.
 ; Import graphics data
 ; 
 ;---------------|---------|------------|-------------------------------------
-.bank 1
-.org 0
-.section "CharacterData"
+.bank 0
+.org 5120
+.section "CharacterData" force
 
 .include "palette.inc"
 .include "tiles.inc"
@@ -113,8 +116,8 @@ Start:          InitSNES               ;Initialize the SNES.
 ; Whole ROM bank 2 takes up this space in RAM
 ; 
 ;---------------|---------|------------|-------------------------------------
-.bank 2
-.org 0
+.bank 0
+.org 9216
 .section "RAM_LOOP" force
 RAM_LOOP:       WAI
                 
@@ -126,5 +129,5 @@ RAM_LOOP:       WAI
                 UPDATE_DSP_CH4_REGS
                 UPDATE_DSP_MASTER_CH_REGS
 
-                JMP       $0000
+                JMP       $2400
 .ends
