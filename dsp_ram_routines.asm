@@ -1,8 +1,39 @@
+;----------------------------------------------------------------------------
+; 
+; SNES DRONE Emulation ROM
+; dsp_ram_routines.asm
+; Author: Michael Hirschmugl
+;
+; ROUTINE ch1_go_ram
+; ROUTINE ch2_go_ram
+; ROUTINE ch3_go_ram
+; ROUTINE ch4_go_ram
+; ROUTINE master_go_ram
+; ROUTINE write_dsp_ram
+; MACRO UPDATE_DSP_CH1_REGS
+; MACRO UPDATE_DSP_CH2_REGS
+; MACRO UPDATE_DSP_CH3_REGS
+; MACRO UPDATE_DSP_CH4_REGS
+; MACRO UPDATE_DSP_MASTER_CH_REGS
+;
+; These routines copy the values that are buffered in RAM (00:1000) to the DSP
+; registers. Essentially, the master_go_ram does the same as master_go in
+; dsp_stuff.asm, but not quite (TBD).
+;
+; The macros are simply used to launch the routines, because they are copied to RAM
+; with the macro ROM_2_RAM_LOOP in misc.asm.
+; It's important that these routines are stored at offset $2800 in ROM bank 0, because they
+; need to have the same offset to the main routines (in RAM) after being copied to RAM.
+;
+; Stored in ROM at offset $2800.
+;----------------------------------------------------------------------------
+
 .bank 0
 .org 10240
 .section "DSP_RAM_routines" force
 ;---------------|---------|------------|-------------------------------------
 ;
+; Write Channel 1 data to DSP registers
 ; 
 ;
 ;---------------|---------|------------|-------------------------------------
@@ -203,6 +234,7 @@ master_go_ram:  LDA       $00
 ;---------------|---------|------------|-------------------------------------
 ;
 ; Writes X to SPC-700 DSP register
+; This is a copy of a routine in dsp_stuff.asm (altered for usage from RAM)
 ;
 ;---------------|---------|------------|-------------------------------------
 write_dsp_ram:  PHX

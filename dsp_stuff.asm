@@ -3,10 +3,18 @@
 ; SNES DRONE Emulation ROM
 ; dsp_stuff.asm
 ;
+; ROUTINE spc_wait_boot
+; ROUTINE spc_begin_upload
+; ROUTINE spc_upload_byte
+; ROUTINE write_dsp
+; ROUTINE master_go
+; MACRO UPDATE_DSP_RAM_REGS
 ;
-; 
-; This data is accessed at address $008000+$004400=$00C400.
-; Stored in ROM at offset $4400.
+; All these routines are executed from ROM and stored at
+; offset $1000 ($9000).
+;
+; Author: Michael Hirschmugl
+;
 ;----------------------------------------------------------------------------
 .bank 0
 .org 4096
@@ -168,7 +176,8 @@ master_go:      LDA       $00
 
 ;---------------|---------|------------|-------------------------------------
 ;
-;
+; This macro fetched DSP values from the MCU (ROM) and stores them in 
+; the DSP register buffer at $00:1000 in RAM.
 ;
 ;---------------|---------|------------|-------------------------------------
 .macro  UPDATE_DSP_RAM_REGS

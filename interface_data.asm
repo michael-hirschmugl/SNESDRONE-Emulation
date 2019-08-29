@@ -1,5 +1,7 @@
 ;----------------------------------------------------------------------------
-; 
+; This data specifies the behaviour of the GUI
+; Stored at $4800 ($C800) in ROM and copied to 7F:1000 in RAM by
+; ROM_2_RAM_INTERFACE (in misc.asm).
 ;----------------------------------------------------------------------------
 .bank 0
 .org 18432

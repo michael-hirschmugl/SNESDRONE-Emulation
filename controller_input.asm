@@ -1,3 +1,11 @@
+;----------------------------------------------------------------------------
+; 
+; SNES DRONE Emulation ROM
+; controller_input.asm
+; Author: Michael Hirschmugl
+;
+;----------------------------------------------------------------------------
+
 .ENUM $0F00
 Joy1Raw     DW      ; Holder of RAW joypad data from register (from last frame)
 
