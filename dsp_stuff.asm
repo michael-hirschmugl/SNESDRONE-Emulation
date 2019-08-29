@@ -197,11 +197,18 @@ master_go:      LDA       $00
                 CMP       #45
                 BNE       DSP_ARRAY_I4
                 LDY       #0
-  DSP_ARRAY_I5: LDA       $00C400,X
-                STA       $107F,Y
-                INX
-                INY
-                TXA
-                CMP       #55
-                BNE       DSP_ARRAY_I5
+                
+                LDA       $00C486      ; Master Volume Left
+                STA       $1086
+                LDA       $00C487      ; Master Volume Right
+                STA       $1087
+
+;This is for the whole Master section
+  ;DSP_ARRAY_I5: LDA       $00C400,X
+  ;              STA       $107F,Y
+  ;              INX
+  ;              INY
+  ;              TXA
+  ;              CMP       #55
+  ;              BNE       DSP_ARRAY_I5
 .endm

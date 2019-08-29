@@ -128,21 +128,21 @@
                 STA       $1080
                 LDA       #$00
                 STA       $1081
-                LDA       $1037
-                ASL
-                ASL
-                ASL
-                ORA       $1081
-                STA       $1081
-                LDA       $1027
-                ASL
-                ASL
-                ORA       $1081
-                STA       $1081
-                LDA       $1017
-                ASL
-                ORA       $1081
-                STA       $1081
+                ;LDA       $1037
+                ;ASL
+                ;ASL
+                ;ASL
+                ;ORA       $1081
+                ;STA       $1081
+                ;LDA       $1027
+                ;ASL
+                ;ASL
+                ;ORA       $1081
+                ;STA       $1081
+                ;LDA       $1017
+                ;ASL
+                ;ORA       $1081
+                ;STA       $1081
                 LDA       $1007
                 ORA       $1081
                 STA       $1081        ;Master - Key On

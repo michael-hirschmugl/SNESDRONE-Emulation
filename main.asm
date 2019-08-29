@@ -141,6 +141,7 @@ RAM_LOOP:
                 UPDATE_DSP_MASTER_CH_REGS
 
                 READ_CONTROLLER_1
+                JUMP_INTERFACE
 
                 WAI
 

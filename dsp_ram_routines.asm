@@ -162,6 +162,26 @@ ch4_go_ram:     RTS
 ;---------------|---------|------------|-------------------------------------
 master_go_ram:  LDA       $00
                 XBA
+                LDA       $001007        ;CH1 Key ON?
+                ORA       $001017        ;CH2 Key ON?
+                ORA       $001027        ;CH3 Key ON?
+                ORA       $001037        ;CH4 Key ON?
+                STA       $001081        ;Store at Key ON Master Buffer
+
+                LDA       $00
+                XBA
+                LDA       $1007        ;CH1 Key ON?
+                EOR       #1
+                ORA       $1017        ;CH2 Key ON?
+                EOR       #2
+                ORA       $1027        ;CH3 Key ON?
+                EOR       #4
+                ORA       $1037        ;CH4 Key ON?
+                EOR       #8
+                STA       $1082        ;Store at Key OFF Master Buffer
+                
+                LDA       $00
+                XBA
                 LDA       $1086
                 XBA
                 ORA       #$000C
