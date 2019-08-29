@@ -1,3 +1,19 @@
+;---------------|---------|------------|-------------------------------------
+;
+; SNES DRONE Emulation ROM
+; video_init.asm
+; Author: Michael Hirschmugl
+;
+; MACRO LoadPalette
+; MACRO LoadTiles
+; ROUTINE DMAPalette
+; ROUTINE DMAVramTiles
+;
+; All of this is used in the main programm.
+; Stored and executed in ROM at offset $0C00.
+;
+;---------------|---------|------------|-------------------------------------
+
 .bank 0
 .org 3072
 .section "DMAPaletteandVRAM" force
@@ -25,7 +41,7 @@
 ; example: LoadTiles DATA_24BIT_ADDRESS, VRAM_ADDRESS_START, NUMBER_OF_BYTES
 ;---------------|---------|------------|-------------------------------------
 .macro  LoadTiles
-                LDA       #%10000000   ;When writing to VRAM, increment address after writing by 1
+                LDA       #%10000000   ;When writing to VRAM, increment address by 1 after writing
                 STA       $2115        ;Video Port Control Register
 
                 LDX       #\2          ;VRAM_ADDRESS_START
@@ -42,8 +58,10 @@
 .endm
 
 ;---------------|---------|------------|-------------------------------------
-;
-;
+; DMAs Palette data into CGRAM
+; X: DMA Source Address Registers 16 bit
+; A: DMA Source Address Registers 8 bit
+; Y: DMA Size Registers 16 bit
 ;
 ;---------------|---------|------------|-------------------------------------
 DMAPalette:     STX       $4302        ;DMA Source Address Registers 16 bit (LOW 2 and MID 3)
@@ -55,14 +73,16 @@ DMAPalette:     STX       $4302        ;DMA Source Address Registers 16 bit (LOW
                 LDA       #$22         ;The destination (CGRAM Data write) is loaded into A. $2122 is the actual address, but since DMA only affects bus B, which is only 8 bit, 22 is enough.
                 STA       $4301        ;DMA Destination Register 8 bit
 
-                LDA       #$01         ;Loads the value that is needed to initiate DMA transfer on the first channel.
+                LDA       #$01         ;Loads the value that is needed to initiate DMA transfer into the first channel.
                 STA       $420B        ;DMA Enable Register
 
                 RTS
 
 ;---------------|---------|------------|-------------------------------------
-;
-;
+; DMAs Characters (Tiles) data into VRAM
+; X: DMA Source Address Registers 16 bit
+; A: DMA Source Address Registers 8 bit
+; Y: DMA Size Registers 16 bit
 ;
 ;---------------|---------|------------|-------------------------------------
 DMAVramTiles:   STX       $4302        ;DMA Source Address Registers 16 bit (LOW 2 and MID 3)

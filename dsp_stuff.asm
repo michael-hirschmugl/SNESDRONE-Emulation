@@ -1,3 +1,13 @@
+;----------------------------------------------------------------------------
+; 
+; SNES DRONE Emulation ROM
+; dsp_stuff.asm
+;
+;
+; 
+; This data is accessed at address $008000+$004400=$00C400.
+; Stored in ROM at offset $4400.
+;----------------------------------------------------------------------------
 .bank 0
 .org 4096
 .section "DSPstuff" force

@@ -1,10 +1,14 @@
 ;---------------|---------|------------|-------------------------------------
 ;
+; SNES DRONE Emulation ROM
+; This ROM is best run on BSNES. I don't know if any other emulator can even
+; run it properly.
+; Author: Michael Hirschmugl
 ;
 ; RAM map:
 ; 00:1DFF          Stack Pointer
 ; 00:1E00-00:1FFF  VBlank Routine
-; 7F:2400-7F:3300  Main Loop
+; 7F:2400-7F:3300  Main Loops
 ; 00:1000-00:108F  DSP Register Buffer
 ; 00:0F00          Controller Input Buffer (max. 0100h 256 bytes)
 ; 7F:1000-7F:11C2  Interface Data
@@ -25,12 +29,15 @@
 ;
 ; The VBlank Routine
 ; This will be placed in RAM at 00:1E00-1FFF (after Stack Pointer)
+; It is running nothing at the moment, but it will run the 
+; update for the screen (mostly update tilemaps).
 ;
 ;---------------|---------|------------|-------------------------------------
 .bank 0
 .org 8192
 .section "VBlank" force
-VBlank:         NMIIN                  ;A=8bit, X/Y=16bit
+VBlank:         NMIIN                  ;Saves all registers
+                                       ;A=8bit, X/Y=16bit
                 
 
                 NMIOUT
@@ -39,6 +46,17 @@ VBlank:         NMIIN                  ;A=8bit, X/Y=16bit
 ;---------------|---------|------------|-------------------------------------
 ; 
 ; Main Program
+;
+; 1. Initialize SNES
+; 2. Load Palette from section "CharacterData" (ROM: $000800) stores it in CGRAM
+; 3. Load Characters (Tiles) from section "CharacterData" (ROM: $000800) stores it in VRAM
+; 4. Init Backgrounds and Screen (Tilemap location and character location)
+; 5. Load Tilemap from section "CharacterData" (ROM: $000800) stores it in VRAM
+;    The tilemap is stored with the same routine as the character data, but tilemap
+;    has an offset of $400.
+; 6. Turn ON screen
+; 7. Wait for SPC-700 to finish booting.
+; 8. Upload audio samples from 
 ; 
 ;---------------|---------|------------|-------------------------------------
 .bank 0
@@ -95,14 +113,10 @@ Start:          InitSNES               ;Initialize the SNES.
 
                 JSR       master_go
 
-  ;loop_di_loop: JMP       loop_di_loop
-
-                ;EnableNMI
                 STZ       $4016        ;Write a byte of nothing to $4016 (old style joypad register)
                 EnableNMIandAutoJoypad
                 NMIIN
                 JML       $7F2400
-                ;NMIOUT
 
 .ends
 
