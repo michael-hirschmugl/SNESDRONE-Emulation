@@ -7,6 +7,7 @@
 ; 7F:2400-7F:3300  Main Loop
 ; 00:1000-00:108F  DSP Register Buffer
 ; 00:0F00          Controller Input Buffer (max. 0100h 256 bytes)
+; 7F:1000-7F:11C2  Interface Data
 ;
 ;---------------|---------|------------|-------------------------------------
 .include "header.inc"
@@ -18,6 +19,7 @@
 .include "misc.asm"
 .include "dsp_array_values_sim.asm"
 .include "controller_input.asm"
+.include "interface_data.asm"
 
 ;---------------|---------|------------|-------------------------------------
 ;
@@ -87,6 +89,7 @@ Start:          InitSNES               ;Initialize the SNES.
 
                 ROM_2_RAM_LOOP
                 ROM_2_RAM_VBLANK
+                ROM_2_RAM_INTERFACE
 
                 Accu_8bit
 
@@ -127,7 +130,7 @@ Start:          InitSNES               ;Initialize the SNES.
 .bank 0
 .org 9216
 .section "RAM_LOOP" force
-RAM_LOOP:       WAI
+RAM_LOOP:       
                 
                 UPDATE_DSP_RAM_REGS
 
@@ -137,7 +140,9 @@ RAM_LOOP:       WAI
                 UPDATE_DSP_CH4_REGS
                 UPDATE_DSP_MASTER_CH_REGS
 
-                JSL       Joypad_Ready
+                READ_CONTROLLER_1
+
+                WAI
 
                 JMP       $2400
 .ends

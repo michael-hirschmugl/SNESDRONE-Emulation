@@ -48,5 +48,16 @@ Joypad_Ready:   LDA       $4212
                 AND       Joy1Raw
                 STA       Joy1Held
                 Accu_8bit
-  Skip_Joypad:  RTL
+  Skip_Joypad:  RTS
 .ends
+
+;---------------|---------|------------|-------------------------------------
+;
+;
+;
+;---------------|---------|------------|-------------------------------------
+.macro  READ_CONTROLLER_1
+                PER       ret30
+                BRL       Joypad_Ready
+                ret30:     NOP
+.endm
