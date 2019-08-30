@@ -221,6 +221,7 @@ master_go_ram:
                 PER       ret27
                 BRL       write_dsp_ram
                 ret27:     NOP
+
                 LDA       $00
                 XBA
                 LDA       $1087

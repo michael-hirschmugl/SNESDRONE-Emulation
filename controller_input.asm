@@ -91,8 +91,8 @@ Jump_Around:    Accu_16bit             ;Jump up, jump up and get down
                 CMP       #$E
                 BEQ       JMP_LFT_DWN_RGT
 
-  JMP_UP:       LDA       $000F02
-                CMP       #$0800
+  JMP_UP:       LDA       $000F02      ;Joy1Press Buffer
+                CMP       #$0800       ;#$08 = UP
                 BNE       Leave_Short1
                 LDA       $7F0002,X
                 STA       $7F11C0
@@ -163,6 +163,51 @@ Jump_Around:    Accu_16bit             ;Jump up, jump up and get down
   Leave:       
                Accu_8bit
                RTS
+
+;---------------|---------|------------|-------------------------------------
+;
+; 
+; 
+;
+;---------------|---------|------------|-------------------------------------
+Button_A_Rtn:   LDA       $000F02      ;Joy1Press Buffer
+                CMP       #$80         ;#$80 = Button A
+                BNE       Leave_Btn_A
+                ;Button A Pressed, on one of the ON/OFF?
+                Accu_16bit
+                LDA       $7F11C0
+                CMP       #$1000
+                BEQ       Ch1_ON_OFF
+                CMP       #$102A
+                ;BEQ       Ch2_ON_OFF
+                CMP       #$1054
+                ;BEQ       Ch3_ON_OFF
+                CMP       #$107E
+                ;BEQ       Ch4_ON_OFF
+                RTS
+  Ch1_ON_OFF:   ;Is it ON now?
+                Accu_8bit
+                LDA       $001007
+                CMP       #$01
+                BEQ       Trn_Ch1_Off
+                NOP
+                CLC
+                LDA       #$01
+                STA       $001007
+                LDX       #$014C
+                PER       ret40
+                BRL       write_dsp_ram
+                ret40:     NOP
+                RTS
+    Trn_Ch1_Off: STZ      $001007
+                LDX       #$015C
+                PER       ret39
+                BRL       write_dsp_ram
+                ret39:     NOP
+                RTS
+
+
+  Leave_Btn_A:  RTS
                 
 .ends
 
@@ -186,4 +231,15 @@ Jump_Around:    Accu_16bit             ;Jump up, jump up and get down
                 PER       ret31
                 BRL       Jump_Around
                 ret31:     NOP
+.endm
+
+;---------------|---------|------------|-------------------------------------
+;
+;
+;
+;---------------|---------|------------|-------------------------------------
+.macro  BUTTON_A_THINGS
+                PER       ret37
+                BRL       Button_A_Rtn
+                ret37:     NOP
 .endm

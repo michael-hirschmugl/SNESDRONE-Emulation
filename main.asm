@@ -168,7 +168,7 @@ RAM_LOOP:
                 
 
                 ;These are macros that launch routines stored in RAM (by branching there)
-                ;The routines write values from the DSP buffer in RAM to the DSP registers.
+                ;The routines write values from the DSP buffer in RAM to the DSP registers
                 UPDATE_DSP_CH1_REGS    ; launches ch1_go_ram from dsp_ram_routines.asm 
                 UPDATE_DSP_CH2_REGS    ; launches ch2_go_ram from dsp_ram_routines.asm 
                 UPDATE_DSP_CH3_REGS    ; launches ch3_go_ram from dsp_ram_routines.asm 
@@ -178,6 +178,13 @@ RAM_LOOP:
 
                 READ_CONTROLLER_1
                 JUMP_INTERFACE
+                Accu_8bit
+                BUTTON_A_THINGS
+                Accu_8bit
+
+;---------------|---------|------------|-------------------------------------
+; Everything that's coming up, needs the MCU
+;---------------|---------|------------|-------------------------------------
 
                 ;Fetches values from MCU and stores them in
                 ;the DSP buffer in RAM (00:1000)
@@ -187,6 +194,7 @@ RAM_LOOP:
                 ; INSIDE NMI ROUTINE???
 
                 WAI
+;---------------|---------|------------|-------------------------------------
 
                 JMP       $2400
 .ends
