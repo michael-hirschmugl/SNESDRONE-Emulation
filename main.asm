@@ -63,14 +63,18 @@ VBlank:         NMIIN                  ;Saves all registers
 .org 2048
 .section "MainCode" force
 
-Start:          InitSNES               ;Initialize the SNES.
+Start:          InitSNES               ;Initialize the SNES. (snes_init.asm)
 
-                LoadPalette BG_Palette, 0, 4  ;BG_Palette is in "palette.inc", 0 is the index of the first color, 4 is the amount of color to write.
-                LoadTiles   Tiles, $0000, 192 ;Tiles is in "tiles.inc", $0000 is the address in VRAM to start writing data, 192 is the amount of data in bytes.
+                ;(video_init.asm)
+                LoadPalette BG_Palette, 0, 4  ;BG_Palette is in "palette.inc", 0 is the index of the 
+                                              ;first color, 4 is the amount of color to write.
+                LoadTiles   Tiles, $0000, 192 ;Tiles is in "tiles.inc", $0000 is the address in
+                                              ;VRAM to start writing data, 192 is the amount of data in bytes.
 
                 STZ       $2105        ;Screen mode register (BG mode 1, 8x8 tiles)
                 LDA       #$04         ;Value for BG1 Tile Map Location (incremented in $0400 words, so we start at $0400)
-                STA       $2107        ;BG1 Tile Map Location (aaaaaass, a is the tile map offset in 0400 increments and ss defines the tile map size 00=32x32 01=64x32 10=32x64 11=64x64)
+                STA       $2107        ;BG1 Tile Map Location (aaaaaass, a is the tile map offset in 0400
+                                       ;increments and ss defines the tile map size 00=32x32 01=64x32 10=32x64 11=64x64)
 
                 STZ       $210B        ;BG1 & BG2 Character location: Set BG1's Character VRAM offset to $0000 (word address)
                 STZ       $210C        ;BG3 & BG4 Character Location: Set BG3's Character VRAM offset to $0000 (word address)
@@ -78,14 +82,18 @@ Start:          InitSNES               ;Initialize the SNES.
                 LDA       #$01         ;Value for Main screen designation Register (enable BG1)
                 STA       $212C        ;Main screen designation Register
 
+                ;(video_init.asm)
                 LoadTiles   Tilemap, $0400, 2048
                 
                 LDA       #$0F
                 STA       $2100        ;Turn on screen, full Brightnes
 
+                ;Wait for the SPC-700 to finish booting
+                ;(dsp_stuff.asm)
                 JSR       spc_wait_boot
                 
                 ;Upload sample to SPC at $200
+                ;(dsp_stuff.asm)
                 LDY       #$0200
                 JSR       spc_begin_upload
   loop:         LDA       sample,y
@@ -94,36 +102,48 @@ Start:          InitSNES               ;Initialize the SNES.
                 BNE       loop
   
                 ;Init DSP register buffer
+                ;These macros specify the init values for the registers.
+                ;(macros dsp_init.asm)
                 InitDSPch1
                 InitDSPch2
                 InitDSPch3
                 InitDSPch4
                 InitDSPmaster
 
-                ;Let's load a whole ROM bank into RAM and execute from there... sweet
-                ;Only thing is, we cannot overwrite the RAM mirror at 7E, so
+                ;Let's load all routines into RAM that need to be executed from there.
+                ;Only thing is, we should not overwrite the RAM mirror at 7E, so
                 ;let's start at 7F, easy!
+                ;(macros misc.asm)
+                ;"LOOP" cover sections "RAM_LOOP", "DSP_RAM_ROUTINES" and "Controller_Read_Routines".
+                ;       goes to RAM: 7F:2400
+                ;"VBLANK" is the NMI routine, which is copied into the first page of RAM, right
+                ;after the Stack Pointer
+                ;       goes to RAM: 00:1E00
+                ;"INTERFACE" is the map for the GUI
+                ;       goes to RAM: 7F:1000
                 Accu_16bit
-
                 ROM_2_RAM_LOOP
                 ROM_2_RAM_VBLANK
                 ROM_2_RAM_INTERFACE
-
                 Accu_8bit
 
+                ;Writes all values from the master dsp register buffer in RAM to the
+                ;registers in the DSP.
+                ;(dsp_stuff.asm)
                 JSR       master_go
 
                 STZ       $4016        ;Write a byte of nothing to $4016 (old style joypad register)
                 EnableNMIandAutoJoypad
                 NMIIN
-                JML       $7F2400
+                JML       $7F2400      ;Jump into main Loop in RAM
 
 .ends
 
 ;---------------|---------|------------|-------------------------------------
 ; 
 ; Import graphics data
-; 
+; Written to VRAM and CGRAM by routines in video_init.asm
+;
 ;---------------|---------|------------|-------------------------------------
 .bank 0
 .org 5120
@@ -146,16 +166,25 @@ Start:          InitSNES               ;Initialize the SNES.
 .section "RAM_LOOP" force
 RAM_LOOP:       
                 
-                UPDATE_DSP_RAM_REGS
 
-                UPDATE_DSP_CH1_REGS
-                UPDATE_DSP_CH2_REGS
-                UPDATE_DSP_CH3_REGS
-                UPDATE_DSP_CH4_REGS
-                UPDATE_DSP_MASTER_CH_REGS
+                ;These are macros that launch routines stored in RAM (by branching there)
+                ;The routines write values from the DSP buffer in RAM to the DSP registers.
+                UPDATE_DSP_CH1_REGS    ; launches ch1_go_ram from dsp_ram_routines.asm 
+                UPDATE_DSP_CH2_REGS    ; launches ch2_go_ram from dsp_ram_routines.asm 
+                UPDATE_DSP_CH3_REGS    ; launches ch3_go_ram from dsp_ram_routines.asm 
+                UPDATE_DSP_CH4_REGS    ; launches ch4_go_ram from dsp_ram_routines.asm 
+                UPDATE_DSP_MASTER_CH_REGS ; Only Volume is written! Key ON and all else must be done when
+                                          ; user needs.
 
                 READ_CONTROLLER_1
                 JUMP_INTERFACE
+
+                ;Fetches values from MCU and stores them in
+                ;the DSP buffer in RAM (00:1000)
+                ;(macro dsp_stuff.asm)
+                ;Please don't ask me why this is in dsp_stuff.asm
+                UPDATE_DSP_RAM_REGS
+                ; INSIDE NMI ROUTINE???
 
                 WAI
 

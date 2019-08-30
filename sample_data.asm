@@ -4,7 +4,7 @@
 ; sample_data.asm
 ; Author: Michael Hirschmugl
 ;
- ;Stored in DSP RAM with a routine in main.asm
+; Stored in DSP RAM with a routine in main.asm
 ;
 ;----------------------------------------------------------------------------
 sample:

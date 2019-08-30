@@ -2,6 +2,7 @@
 ; 
 ; SNES DRONE Emulation ROM
 ; dsp_array_values_sim.asm
+; Author: Michael Hirschmugl
 ;
 ; This file is what the DSP is initialized with. But, this file is also what
 ; the CPU reads form the MCU.
