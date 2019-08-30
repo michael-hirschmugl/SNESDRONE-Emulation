@@ -172,42 +172,61 @@ Jump_Around:    Accu_16bit             ;Jump up, jump up and get down
 ;---------------|---------|------------|-------------------------------------
 Button_A_Rtn:   LDA       $000F02      ;Joy1Press Buffer
                 CMP       #$80         ;#$80 = Button A
-                BNE       Leave_Btn_A
-                ;Button A Pressed, on one of the ON/OFF?
+                BEQ       Work_Btn_A
+                RTS
+  Work_Btn_A:   ;Button A Pressed, on one of the ON/OFF?
                 Accu_16bit
                 LDA       $7F11C0
                 CMP       #$1000
                 BEQ       Ch1_ON_OFF
                 CMP       #$102A
-                ;BEQ       Ch2_ON_OFF
+                BEQ       Ch2_ON_OFF
                 CMP       #$1054
-                ;BEQ       Ch3_ON_OFF
+                BEQ       Ch3_ON_OFF
                 CMP       #$107E
-                ;BEQ       Ch4_ON_OFF
+                BEQ       Ch4_ON_OFF
+                Accu_8bit
                 RTS
   Ch1_ON_OFF:   ;Is it ON now?
                 Accu_8bit
                 LDA       $001007
                 CMP       #$01
                 BEQ       Trn_Ch1_Off
-                NOP
-                CLC
                 LDA       #$01
                 STA       $001007
-                LDX       #$014C
-                PER       ret40
-                BRL       write_dsp_ram
-                ret40:     NOP
                 RTS
     Trn_Ch1_Off: STZ      $001007
-                LDX       #$015C
-                PER       ret39
-                BRL       write_dsp_ram
-                ret39:     NOP
                 RTS
-
-
-  Leave_Btn_A:  RTS
+  Ch2_ON_OFF:   ;Is it ON now?
+                Accu_8bit
+                LDA       $001017
+                CMP       #$02
+                BEQ       Trn_Ch2_Off
+                LDA       #$02
+                STA       $001017
+                RTS
+    Trn_Ch2_Off: STZ      $001017
+                RTS
+  Ch3_ON_OFF:   ;Is it ON now?
+                Accu_8bit
+                LDA       $001027
+                CMP       #$04
+                BEQ       Trn_Ch3_Off
+                LDA       #$04
+                STA       $001027
+                RTS
+    Trn_Ch3_Off: STZ      $001027
+                RTS
+  Ch4_ON_OFF:   ;Is it ON now?
+                Accu_8bit
+                LDA       $001037
+                CMP       #$08
+                BEQ       Trn_Ch4_Off
+                LDA       #$08
+                STA       $001037
+                RTS
+    Trn_Ch4_Off: STZ      $001037
+                RTS
                 
 .ends
 

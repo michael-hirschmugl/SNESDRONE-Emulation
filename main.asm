@@ -178,7 +178,6 @@ RAM_LOOP:
 
                 READ_CONTROLLER_1
                 JUMP_INTERFACE
-                Accu_8bit
                 BUTTON_A_THINGS
                 Accu_8bit
 

@@ -211,7 +211,7 @@ master_go_ram:
                 ;ORA       $1037        ;CH4 Key ON?
                 ;EOR       #8
                 ;STA       $1082        ;Store at Key OFF Master Buffer
-                
+
                 LDA       $00
                 XBA
                 LDA       $1086
@@ -231,6 +231,7 @@ master_go_ram:
                 PER       ret28
                 BRL       write_dsp_ram
                 ret28:     NOP
+
                 RTS
 
 ;---------------|---------|------------|-------------------------------------
