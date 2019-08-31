@@ -1,3 +1,21 @@
+;----------------------------------------------------------------------------
+; 
+; SNES DRONE Emulation ROM
+; dsp_stuff.asm
+;
+; ROUTINE spc_wait_boot
+; ROUTINE spc_begin_upload
+; ROUTINE spc_upload_byte
+; ROUTINE write_dsp
+; ROUTINE master_go
+; MACRO UPDATE_DSP_RAM_REGS
+;
+; All these routines are executed from ROM and stored at
+; offset $1000 ($9000).
+;
+; Author: Michael Hirschmugl
+;
+;----------------------------------------------------------------------------
 .bank 0
 .org 4096
 .section "DSPstuff" force
@@ -80,76 +98,97 @@ write_dsp:      PHX
 ;---------------|---------|------------|-------------------------------------
 ;
 ; Write Master Channel Data
+; Reads values from DSP register buffer in RAM and copies them to the DSP
+; registers.
+; This is used for initialization.
+;
+; https://wiki.superfamicom.org/spc700-reference#toc-47
 ;
 ;---------------|---------|------------|-------------------------------------
 master_go:      LDA       $00
                 XBA
-                LDA       $1083
+                LDA       $1083        ; Master Offset
                 XBA
-                ORA       #$005D
+                ORA       #$005D       ; Offset of source directory (DIR*100h = memory offset)
                 TAX
                 JSR       write_dsp
+
                 LDA       $00
                 XBA
-                LDA       $1084
+                LDA       $1084        ; Master Noise
                 XBA
-                ORA       #$003D
+                ORA       #$003D       ; Noise enable
                 TAX
                 JSR       write_dsp
+
                 LDA       $00
                 XBA
-                LDA       $1085
+                LDA       $1085        ; Master Echo
                 XBA
-                ORA       #$004D
+                ORA       #$004D       ; Echo enable
                 TAX
                 JSR       write_dsp
+
                 LDA       $00
                 XBA
-                LDA       $1080
+                LDA       $1080        ; Master DSP Flags
                 XBA
-                ORA       #$006C
+                ORA       #$006C       ; DSP Flags. (used for MUTE,ECHO,RESET,NOISE CLOCK)
                 TAX
                 JSR       write_dsp
+                    ;RESET: Soft reset. Writing a '1' here will set all voices in a state of 
+                    ;"Key-On suspension" (???). MUTE is also set. A soft-reset gets triggered upon power-on.
+                    ;MUTE: Mutes all channel output.
+                    ;ECEN: ~Echo enable. A '0' here enables echo data to be written into external memory
+                    ;(the memory your program/data is in!). Be careful when enabling it, it's quite easy to
+                    ;crash your program with the echo hardware!
+                    ;NOISE CLOCK: Designates the frequency for the white noise.
+
                 LDA       $00
                 XBA
-                LDA       $1082
+                LDA       $1082        ; Master Key OFF
                 XBA
-                ORA       #$005C
+                ORA       #$005C       ; Key Off (1 bit for each voice)
                 TAX
                 JSR       write_dsp
+
                 LDA       $00
                 XBA
-                LDA       $1081
+                LDA       $1081        ; Master Key ON
                 XBA
-                ORA       #$004C
+                ORA       #$004C       ; Key On (1 bit for each voice)
                 TAX
                 JSR       write_dsp
+
                 LDA       $00
                 XBA
-                LDA       $1088
+                LDA       $1088        ; Master Echo Volume Left
                 XBA
-                ORA       #$002C
+                ORA       #$002C       ; Echo Volume (left output)
                 TAX
                 JSR       write_dsp
+
                 LDA       $00
                 XBA
-                LDA       $1089
+                LDA       $1089        ; Master Echo Volume Right
                 XBA
-                ORA       #$003C
+                ORA       #$003C       ; Echo Volume (right output)
                 TAX
                 JSR       write_dsp
+
                 LDA       $00
                 XBA
-                LDA       $1086
+                LDA       $1086        ; Master Main Volume Left
                 XBA
-                ORA       #$000C
+                ORA       #$000C       ; Main Volume (left output)
                 TAX
                 JSR       write_dsp
+
                 LDA       $00
                 XBA
-                LDA       $1087
+                LDA       $1087         ; Master Main Volume Right
                 XBA
-                ORA       #$001C
+                ORA       #$001C        ; Main Volume (right output)
                 TAX
                 JSR       write_dsp
                 RTS
@@ -158,50 +197,81 @@ master_go:      LDA       $00
 
 ;---------------|---------|------------|-------------------------------------
 ;
+; This macro fetched DSP values from the MCU (ROM) and stores them in 
+; the DSP register buffer at $00:1000 in RAM.
 ;
+; values fetched from MCU:
+; ch1 vol L
+; ch1 vol R
+; ch1 LO 8bit PITCH
+; ch1 HI 8bit PITCH
+; ch2 vol L
+; ch2 vol R
+; ch2 LO 8bit PITCH
+; ch2 HI 8bit PITCH
+; ch3 vol L
+; ch3 vol R
+; ch3 LO 8bit PITCH
+; ch3 HI 8bit PITCH
+; ch4 vol L
+; ch4 vol R
+; ch4 LO 8bit PITCH
+; ch4 HI 8bit PITCH
+; Master Volume Left
+; Master Volume Right
 ;
 ;---------------|---------|------------|-------------------------------------
 .macro  UPDATE_DSP_RAM_REGS
                 LDX       #2
-
                 LDY       #0
   DSP_ARRAY_I1: LDA       $00C400,X
                 STA       $1000,Y
                 INX
                 INY
                 TXA
-                CMP       #12
+                CMP       #6           ; For now, only fetch values for volume and frequency
                 BNE       DSP_ARRAY_I1
+
+                LDX       #13
                 LDY       #0
   DSP_ARRAY_I2: LDA       $00C400,X
-                STA       $100F,Y
+                STA       $1010,Y
                 INX
                 INY
                 TXA
-                CMP       #23
+                CMP       #17
                 BNE       DSP_ARRAY_I2
+
+                LDX       #24
                 LDY       #0
   DSP_ARRAY_I3: LDA       $00C400,X
-                STA       $101F,Y
+                STA       $1020,Y
                 INX
                 INY
                 TXA
-                CMP       #34
+                CMP       #28
                 BNE       DSP_ARRAY_I3
+
+                LDX       #35
                 LDY       #0
   DSP_ARRAY_I4: LDA       $00C400,X
-                STA       $102F,Y
+                STA       $1030,Y
                 INX
                 INY
                 TXA
-                CMP       #45
+                CMP       #39
                 BNE       DSP_ARRAY_I4
+
+
+                LDX       #52
                 LDY       #0
+;This is for the whole Master section
+;But in this configuration, it's only for volume
   DSP_ARRAY_I5: LDA       $00C400,X
-                STA       $107F,Y
+                STA       $1086,Y
                 INX
                 INY
                 TXA
-                CMP       #55
+                CMP       #54
                 BNE       DSP_ARRAY_I5
 .endm

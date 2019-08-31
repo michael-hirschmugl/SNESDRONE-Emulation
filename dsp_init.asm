@@ -1,5 +1,29 @@
 ;---------------|---------|------------|-------------------------------------
 ;
+; SNES DRONE Emulation ROM
+; dsp_init.asm
+; Author: Michael Hirschmugl
+;
+; MACRO InitDSPch1
+; MACRO InitDSPch2
+; MACRO InitDSPch3
+; MACRO InitDSPch4
+; MACRO InitDSPmaster
+;
+; All macros, used in the main program. Stored in ROM together with
+; the main program somewhere around offset $800.
+; Mainly, these macros load predefined values into the DSP buffer registers
+; in RAM at 00:1000. So, the values specified here, are the values the
+; DSP is going to be initialized with.
+;
+; These routines do NOT write into DSP memory! For channels and master, the
+; RAM routines are used to write DSP register. But, dsp_stuff.asm also
+; features a single routine master_go, that will init dsp registers for the master channel.
+;
+;---------------|---------|------------|-------------------------------------
+
+;---------------|---------|------------|-------------------------------------
+;
 ;
 ;
 ;---------------|---------|------------|-------------------------------------
@@ -48,7 +72,7 @@
                 STA       $1015
                 LDA       #$E0         ;Ch2 - ADSR2
                 STA       $1016
-                LDA       #$01         ;Ch2 - Key ON
+                LDA       #$02         ;Ch2 - Key ON
                 STA       $1017
                 LDA       #$00         ;Ch2 - Pitch Modulation
                 STA       $1018
@@ -78,7 +102,7 @@
                 STA       $1025
                 LDA       #$E0         ;Ch3 - ADSR2
                 STA       $1026
-                LDA       #$00         ;Ch3 - Key ON
+                LDA       #$00         ;Ch3 - Key ON (4 for ON)
                 STA       $1027
                 LDA       #$00         ;Ch3 - Pitch Modulation
                 STA       $1028
@@ -108,7 +132,7 @@
                 STA       $1035
                 LDA       #$E0         ;Ch4 - ADSR2
                 STA       $1036
-                LDA       #$00         ;Ch4 - Key ON
+                LDA       #$00         ;Ch4 - Key ON (8 for ON)
                 STA       $1037
                 LDA       #$00         ;Ch4 - Pitch Modulation
                 STA       $1038
@@ -128,67 +152,15 @@
                 STA       $1080
                 LDA       #$00
                 STA       $1081
-                LDA       $1037
-                ASL
-                ASL
-                ASL
-                ORA       $1081
-                STA       $1081
-                LDA       $1027
-                ASL
-                ASL
-                ORA       $1081
-                STA       $1081
-                LDA       $1017
-                ASL
-                ORA       $1081
-                STA       $1081
-                LDA       $1007
-                ORA       $1081
+                LDA       #$3          ;CH1 and CH2 ON
                 STA       $1081        ;Master - Key On
                 EOR       #$FF         ;Master - Key Off
                 STA       $1082
                 LDA       #$02         ;Master - Offset
                 STA       $1083
                 LDA       #$00
-                STA       $1084
-                LDA       $1039
-                ASL
-                ASL
-                ASL
-                ORA       $1084
-                STA       $1084
-                LDA       $1029
-                ASL
-                ASL
-                ORA       $1084
-                STA       $1084
-                LDA       $1019
-                ASL
-                ORA       $1084
-                STA       $1084
-                LDA       $1009
-                ORA       $1084
                 STA       $1084        ;Master - Noise
                 LDA       #$00
-                STA       $1085
-                LDA       $103A
-                ASL
-                ASL
-                ASL
-                ORA       $1085
-                STA       $1085
-                LDA       $102A
-                ASL
-                ASL
-                ORA       $1085
-                STA       $1085
-                LDA       $101A
-                ASL
-                ORA       $1085
-                STA       $1085
-                LDA       $100A
-                ORA       $1085
                 STA       $1085        ;Master - Echo
                 LDA       #$7F         ;Master - Volume L
                 STA       $1086

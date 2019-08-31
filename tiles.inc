@@ -1,3 +1,13 @@
+;----------------------------------------------------------------------------
+; 
+; SNES DRONE Emulation ROM
+; tiles.inc
+; Author: Michael Hirschmugl
+;
+; These are coded character tile that can be used on bachground.
+; These characters are stored in VRAM at offset $0000.
+;
+;----------------------------------------------------------------------------
 Tiles:
     .db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00 ;0 - Empty Block (0)
     .db $FF, $00, $FF, $00, $FF, $00, $FF, $00, $FF, $00, $FF, $00, $FF, $00, $FF, $00 ;1 - Full Block  (1)
