@@ -1,4 +1,4 @@
-# SNESDRONE-emulation
+# SNESDRONE emulator ROM image
 A ROM image for the Super NES to control the internal wavetable synthesizer chip (SONY DSP)  for profit.
 
 ## What?
@@ -24,6 +24,5 @@ I use BSNES, since this project is very hardware based and uses some tricks that
 * GUI is working, well the basics at least. It's possible to turn channels on and off.
 
 ## What's next?
-* Display Pitch value in GUI
 * Display Volume in GUI
 * Change Wave in GUI
