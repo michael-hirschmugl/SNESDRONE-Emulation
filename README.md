@@ -21,7 +21,9 @@ I use BSNES, since this project is very hardware based and uses some tricks that
 
 ## How far is it?
 * Sound is working (4 out of 8 oscillators, only one waveform, no efx)
-* GUI is in the making (right now it's a single frame that you can't interact with)
+* GUI is working, well the basics at least. It's possible to turn channels on and off.
 
 ## What's next?
-* Make the GUI work
+* Display Pitch value in GUI
+* Display Volume in GUI
+* Change Wave in GUI
