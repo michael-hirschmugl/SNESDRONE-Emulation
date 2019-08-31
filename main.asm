@@ -12,6 +12,7 @@
 ; 00:1000-00:108F  DSP Register Buffer
 ; 00:0F00          Controller Input Buffer (max. 0100h 256 bytes)
 ; 7F:1000-7F:11C2  Interface Data
+; 7F:4000-7F:4800  Tilemap Buffer
 ;
 ;---------------|---------|------------|-------------------------------------
 .include "header.inc"
@@ -38,6 +39,34 @@
 .section "VBlank" force
 VBlank:         NMIIN                  ;Saves all registers
                                        ;A=8bit, X/Y=16bit
+
+                LDA       #%10000000   ;When writing to VRAM, increment address by 1 after writing
+                STA       $2115        ;Video Port Control Register
+
+                LDX       #$0C00       ;VRAM_ADDRESS_START
+                STX       $2116        ;VRAM Address Registers (LOW and HIGH)
+
+                LDX       #$4000       ;(16 bit) Address of vram data to load
+                LDA       #$7F         ;(8 bit) Bank Address of vram data to load
+                LDY       #2048        ;Amount of bytes to write per DMA
+                ;A=Bank of data
+                ;X=Address of data
+                ;Y=Amount of data in bytes
+
+                STX       $4302        ;DMA Source Address Registers 16 bit (LOW 2 and MID 3)
+                STA       $4304        ;DMA Source Address Registers 8 bit  (HIGH 4)
+                STY       $4305        ;DMA Size Registers 16 bit           (LOW 5 and HIGH 6)
+
+                LDA       #$01         ;Value for DMA Control Register (2 registers write once, since addresses in VRAM are words, instead of bytes as in CGRAM)
+                STA       $4300        ;DMA Control Register
+
+                LDA       #$18         ;The destination (VRAM Data write) is loaded into A. $2118 is the actual address, but since DMA only affects bus B, which is only 8 bit, 18 is enough.
+                                       ;Also, there are actually two bytes to be written in 2118 and 2119 because VRAM has word addresses, but DMA already knows to write words because we said so in the DMA Control Register.
+                STA       $4301        ;DMA Destination Register 8 bit
+
+                LDA       #$01         ;Loads the value that is needed to initiate DMA transfer on the first channel.
+                STA       $420B        ;DMA Enable Register
+
                 
 
                 NMIOUT
@@ -68,6 +97,7 @@ Start:          InitSNES               ;Initialize the SNES. (snes_init.asm)
                 ;(video_init.asm)
                 LoadPalette BG_Palette, 0, 4  ;BG_Palette is in "palette.inc", 0 is the index of the 
                                               ;first color, 4 is the amount of color to write.
+                LoadPalette BG_Palette, 31, 4 ;BG_Palette for BG2
                 LoadTiles   Tiles, $0000, 192 ;Tiles is in "tiles.inc", $0000 is the address in
                                               ;VRAM to start writing data, 192 is the amount of data in bytes.
 
@@ -76,14 +106,19 @@ Start:          InitSNES               ;Initialize the SNES. (snes_init.asm)
                 STA       $2107        ;BG1 Tile Map Location (aaaaaass, a is the tile map offset in 0400
                                        ;increments and ss defines the tile map size 00=32x32 01=64x32 10=32x64 11=64x64)
 
+                LDA       #$0C
+                STA       $2108
+
                 STZ       $210B        ;BG1 & BG2 Character location: Set BG1's Character VRAM offset to $0000 (word address)
                 STZ       $210C        ;BG3 & BG4 Character Location: Set BG3's Character VRAM offset to $0000 (word address)
 
-                LDA       #$01         ;Value for Main screen designation Register (enable BG1)
+                ;LDA       #$01         ;Value for Main screen designation Register (enable BG1)
+                LDA       #$03
                 STA       $212C        ;Main screen designation Register
 
                 ;(video_init.asm)
                 LoadTiles   Tilemap, $0400, 2048
+                ;LoadTiles   Tilemap, $0C00, 2048
                 
                 LDA       #$0F
                 STA       $2100        ;Turn on screen, full Brightnes
@@ -179,7 +214,9 @@ RAM_LOOP:
                 READ_CONTROLLER_1
                 JUMP_INTERFACE
                 BUTTON_A_THINGS
-                Accu_8bit
+                ;Accu_8bit
+                
+                CURSOR_POS_UPDATE
 
 ;---------------|---------|------------|-------------------------------------
 ; Everything that's coming up, needs the MCU

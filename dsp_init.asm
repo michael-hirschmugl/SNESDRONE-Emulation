@@ -152,68 +152,14 @@
                 STA       $1080
                 LDA       #$00
                 STA       $1081
-                ;LDA       $1037
-                ;ASL
-                ;ASL
-                ;ASL
-                ;ORA       $1081
-                ;STA       $1081
-                ;LDA       $1027
-                ;ASL
-                ;ASL
-                ;ORA       $1081
-                ;STA       $1081
-                ;LDA       $1017
-                ;ASL
-                ;ORA       $1081
-                ;STA       $1081
                 LDA       #$3          ;CH1 and CH2 ON
-                ;ORA       $1081
                 STA       $1081        ;Master - Key On
                 EOR       #$FF         ;Master - Key Off
                 STA       $1082
                 LDA       #$02         ;Master - Offset
                 STA       $1083
-                ;LDA       #$00
-                ;STA       $1084
-                ;LDA       $1039
-                ;ASL
-                ;ASL
-                ;ASL
-                ;ORA       $1084
-                ;STA       $1084
-                ;LDA       $1029
-                ;ASL
-                ;ASL
-                ;ORA       $1084
-                ;STA       $1084
-                ;LDA       $1019
-                ;ASL
-                ;ORA       $1084
-                ;STA       $1084
-                ;LDA       $1009
-                ;ORA       $1084
                 LDA       #$00
                 STA       $1084        ;Master - Noise
-                ;LDA       #$00
-                ;STA       $1085
-                ;LDA       $103A
-                ;ASL
-                ;ASL
-                ;ASL
-                ;ORA       $1085
-                ;STA       $1085
-                ;LDA       $102A
-                ;ASL
-                ;ASL
-                ;ORA       $1085
-                ;STA       $1085
-                ;LDA       $101A
-                ;ASL
-                ;ORA       $1085
-                ;STA       $1085
-                ;LDA       $100A
-                ;ORA       $1085
                 LDA       #$00
                 STA       $1085        ;Master - Echo
                 LDA       #$7F         ;Master - Volume L

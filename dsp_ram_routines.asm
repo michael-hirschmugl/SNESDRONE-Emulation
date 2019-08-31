@@ -177,42 +177,147 @@ ch2_go_ram:     LDA       $00
 ; Write Channel 3 Data
 ;
 ;---------------|---------|------------|-------------------------------------
-ch3_go_ram:     RTS
+ch3_go_ram:     LDA       $00
+                XBA
+                LDA       $1020
+                XBA
+                ORA       #$0020
+                TAX
+                PER       ret70
+                BRL       write_dsp_ram
+                ret70:     NOP
+                LDA       $00
+                XBA
+                LDA       $1021
+                XBA
+                ORA       #$0021
+                TAX
+                PER       ret69
+                BRL       write_dsp_ram
+                ret69:     NOP
+                LDA       $00
+                XBA
+                LDA       $1022
+                XBA
+                ORA       #$0022
+                TAX
+                PER       ret68
+                BRL       write_dsp_ram
+                ret68:     NOP
+                LDA       $00
+                XBA
+                LDA       $1023
+                XBA
+                ORA       #$0023
+                TAX
+                PER       ret67
+                BRL       write_dsp_ram
+                ret67:     NOP
+                LDA       $00
+                XBA
+                LDA       $1024
+                XBA
+                ORA       #$0024
+                TAX
+                PER       ret66
+                BRL       write_dsp_ram
+                ret66:     NOP
+                LDA       $00
+                XBA
+                LDA       $1025
+                XBA
+                ORA       #$0025
+                TAX
+                PER       ret65
+                BRL       write_dsp_ram
+                ret65:     NOP
+                LDA       $00
+                XBA
+                LDA       $1026
+                XBA
+                ORA       #$0026
+                TAX
+                PER       ret64
+                BRL       write_dsp_ram
+                ret64:     NOP
+                RTS
 
 ;---------------|---------|------------|-------------------------------------
 ;
 ; Write Channel 4 Data
 ;
 ;---------------|---------|------------|-------------------------------------
-ch4_go_ram:     RTS
+ch4_go_ram:     LDA       $00
+                XBA
+                LDA       $1030
+                XBA
+                ORA       #$0030
+                TAX
+                PER       ret63
+                BRL       write_dsp_ram
+                ret63:     NOP
+                LDA       $00
+                XBA
+                LDA       $1031
+                XBA
+                ORA       #$0031
+                TAX
+                PER       ret62
+                BRL       write_dsp_ram
+                ret62:     NOP
+                LDA       $00
+                XBA
+                LDA       $1032
+                XBA
+                ORA       #$0032
+                TAX
+                PER       ret61
+                BRL       write_dsp_ram
+                ret61:     NOP
+                LDA       $00
+                XBA
+                LDA       $1033
+                XBA
+                ORA       #$0033
+                TAX
+                PER       ret60
+                BRL       write_dsp_ram
+                ret60:     NOP
+                LDA       $00
+                XBA
+                LDA       $1034
+                XBA
+                ORA       #$0034
+                TAX
+                PER       ret59
+                BRL       write_dsp_ram
+                ret59:     NOP
+                LDA       $00
+                XBA
+                LDA       $1035
+                XBA
+                ORA       #$0035
+                TAX
+                PER       ret58
+                BRL       write_dsp_ram
+                ret58:     NOP
+                LDA       $00
+                XBA
+                LDA       $1036
+                XBA
+                ORA       #$0036
+                TAX
+                PER       ret57
+                BRL       write_dsp_ram
+                ret57:     NOP
+                RTS
 
 ;---------------|---------|------------|-------------------------------------
 ;
 ; Write Master Channel Data
 ;
 ;---------------|---------|------------|-------------------------------------
-master_go_ram:  
-                ;LDA       $00
-                ;XBA
-                ;LDA       $001007        ;CH1 Key ON?
-                ;ORA       $001017        ;CH2 Key ON?
-                ;ORA       $001027        ;CH3 Key ON?
-                ;ORA       $001037        ;CH4 Key ON?
-                ;STA       $001081        ;Store at Key ON Master Buffer
-
-                ;LDA       $00
-                ;XBA
-                ;LDA       $1007        ;CH1 Key ON?
-                ;EOR       #1
-                ;ORA       $1017        ;CH2 Key ON?
-                ;EOR       #2
-                ;ORA       $1027        ;CH3 Key ON?
-                ;EOR       #4
-                ;ORA       $1037        ;CH4 Key ON?
-                ;EOR       #8
-                ;STA       $1082        ;Store at Key OFF Master Buffer
-
-                LDA       $00
+master_go_ram:  LDA       $00
                 XBA
                 LDA       $1086
                 XBA

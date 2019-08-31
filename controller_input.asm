@@ -66,7 +66,9 @@ Joypad_Ready:   LDA       $4212
 ;---------------|---------|------------|-------------------------------------
 
 Jump_Around:    Accu_16bit             ;Jump up, jump up and get down
-                LDA       $7F11C0        
+                LDA       $7F11C0
+                STA       $7F11C2
+                LDA       $7F11C0      ;Load Possible directions for current position 
                 TAX
                 LDA       $7F0000,X
                 LSR
@@ -184,8 +186,9 @@ Button_A_Rtn:   LDA       $000F02      ;Joy1Press Buffer
                 CMP       #$1054
                 BEQ       Ch3_ON_OFF
                 CMP       #$107E
-                BEQ       Ch4_ON_OFF
-                Accu_8bit
+                BNE       Leave_Btn_A
+                BRL       Ch4_ON_OFF
+    Leave_Btn_A: Accu_8bit
                 RTS
   Ch1_ON_OFF:   ;Is it ON now?
                 Accu_8bit
@@ -194,8 +197,20 @@ Button_A_Rtn:   LDA       $000F02      ;Joy1Press Buffer
                 BEQ       Trn_Ch1_Off
                 LDA       #$01
                 STA       $001007
+                LDX       #$005C
+                PER       ret99
+                BRL       write_dsp_ram
+                ret99:     NOP
+                LDX       #$014C
+                PER       ret98
+                BRL       write_dsp_ram
+                ret98:     NOP
                 RTS
     Trn_Ch1_Off: STZ      $001007
+                LDX       #$015C
+                PER       ret97
+                BRL       write_dsp_ram
+                ret97:     NOP
                 RTS
   Ch2_ON_OFF:   ;Is it ON now?
                 Accu_8bit
@@ -204,8 +219,20 @@ Button_A_Rtn:   LDA       $000F02      ;Joy1Press Buffer
                 BEQ       Trn_Ch2_Off
                 LDA       #$02
                 STA       $001017
+                LDX       #$005C
+                PER       ret96
+                BRL       write_dsp_ram
+                ret96:     NOP
+                LDX       #$024C
+                PER       ret95
+                BRL       write_dsp_ram
+                ret95:     NOP
                 RTS
     Trn_Ch2_Off: STZ      $001017
+                LDX       #$025C
+                PER       ret94
+                BRL       write_dsp_ram
+                ret94:     NOP
                 RTS
   Ch3_ON_OFF:   ;Is it ON now?
                 Accu_8bit
@@ -214,8 +241,20 @@ Button_A_Rtn:   LDA       $000F02      ;Joy1Press Buffer
                 BEQ       Trn_Ch3_Off
                 LDA       #$04
                 STA       $001027
+                LDX       #$005C
+                PER       ret93
+                BRL       write_dsp_ram
+                ret93:     NOP
+                LDX       #$044C
+                PER       ret92
+                BRL       write_dsp_ram
+                ret92:     NOP
                 RTS
     Trn_Ch3_Off: STZ      $001027
+                LDX       #$045C
+                PER       ret91
+                BRL       write_dsp_ram
+                ret91:     NOP
                 RTS
   Ch4_ON_OFF:   ;Is it ON now?
                 Accu_8bit
@@ -224,8 +263,20 @@ Button_A_Rtn:   LDA       $000F02      ;Joy1Press Buffer
                 BEQ       Trn_Ch4_Off
                 LDA       #$08
                 STA       $001037
+                LDX       #$005C
+                PER       ret90
+                BRL       write_dsp_ram
+                ret90:     NOP
+                LDX       #$084C
+                PER       ret89
+                BRL       write_dsp_ram
+                ret89:     NOP
                 RTS
     Trn_Ch4_Off: STZ      $001037
+                LDX       #$085C
+                PER       ret88
+                BRL       write_dsp_ram
+                ret88:     NOP
                 RTS
                 
 .ends
@@ -261,4 +312,29 @@ Button_A_Rtn:   LDA       $000F02      ;Joy1Press Buffer
                 PER       ret37
                 BRL       Button_A_Rtn
                 ret37:     NOP
+.endm
+
+;---------------|---------|------------|-------------------------------------
+;
+;
+;
+;---------------|---------|------------|-------------------------------------
+.macro  CURSOR_POS_UPDATE
+                Accu_16bit
+                LDA       $7F11C0
+                CMP       $7F11C2
+                BEQ       Skip_Pos_Upd
+                LDA       $7F11C2      ;Load corresponding tilemap address for previous position
+                TAX
+                LDA       $7F000A,X
+                TAX
+                LDA       #0
+                STA       $7F4000,X    ;Delete Previous Cursor
+                LDA       $7F11C0      ;Load corresponding tilemap address for current position
+                TAX
+                LDA       $7F000A,X
+                TAX
+                LDA       #$0003
+                STA       $7F4000,X    ;Write new Cursor
+  Skip_Pos_Upd: Accu_8bit
 .endm

@@ -10,8 +10,9 @@
 sample:
 ;.org $200
     ;directory:
-    .word $0204      ; start
-    .word $0204      ; loop
+    .word $0206      ; start
+    .word $0206      ; loop
+    .word $0218
 
     ;sample:
     ;sample_loop:
