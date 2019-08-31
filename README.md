@@ -21,8 +21,7 @@ I use BSNES, since this project is very hardware based and uses some tricks that
 
 ## How far is it?
 * Sound is working (4 out of 8 oscillators, only one waveform, no efx)
-* GUI is working, well the basics at least. It's possible to turn channels on and off.
+* GUI is working, well the basics at least. It's possible to turn channels on and off, display pitch value in hex and a bar for volume per channel. Volume is only for left stereo channel though.
 
 ## What's next?
-* Display Volume in GUI
 * Change Wave in GUI
