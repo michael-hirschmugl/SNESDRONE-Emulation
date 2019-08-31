@@ -155,3 +155,106 @@
                 LDA       #%10000001
                 STA       $4200        ;NMITIMEN - Interrupt Enable Flags
 .endm
+
+;---------------|---------|------------|-------------------------------------
+;
+; Reads frequency values from RAM and writes them to the tilemap
+;
+;---------------|---------|------------|-------------------------------------
+.macro  UPDATE_FREQUENCY_GUI
+                LDA       $001003
+                LSR
+                LSR
+                LSR
+                LSR
+                INA
+                STA       $7F4282
+                LDA       $001003
+                AND       #$0F
+                INA
+                STA       $7F4284
+
+                LDA       $001002
+                LSR
+                LSR
+                LSR
+                LSR
+                INA
+                STA       $7F4286
+                LDA       $001002
+                AND       #$0F
+                INA
+                STA       $7F4288
+
+                LDA       $001013
+                LSR
+                LSR
+                LSR
+                LSR
+                INA
+                STA       $7F4292
+                LDA       $001013
+                AND       #$0F
+                INA
+                STA       $7F4294
+
+                LDA       $001012
+                LSR
+                LSR
+                LSR
+                LSR
+                INA
+                STA       $7F4296
+                LDA       $001012
+                AND       #$0F
+                INA
+                STA       $7F4298
+
+                LDA       $001023
+                LSR
+                LSR
+                LSR
+                LSR
+                INA
+                STA       $7F42A2
+                LDA       $001023
+                AND       #$0F
+                INA
+                STA       $7F42A4
+
+                LDA       $001022
+                LSR
+                LSR
+                LSR
+                LSR
+                INA
+                STA       $7F42A6
+                LDA       $001022
+                AND       #$0F
+                INA
+                STA       $7F42A8
+
+                LDA       $001033
+                LSR
+                LSR
+                LSR
+                LSR
+                INA
+                STA       $7F42B2
+                LDA       $001033
+                AND       #$0F
+                INA
+                STA       $7F42B4
+
+                LDA       $001032
+                LSR
+                LSR
+                LSR
+                LSR
+                INA
+                STA       $7F42B6
+                LDA       $001032
+                AND       #$0F
+                INA
+                STA       $7F42B8
+.endm

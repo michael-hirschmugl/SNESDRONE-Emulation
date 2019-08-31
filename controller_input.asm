@@ -334,7 +334,7 @@ Button_A_Rtn:   LDA       $000F02      ;Joy1Press Buffer
                 TAX
                 LDA       $7F000A,X
                 TAX
-                LDA       #$0003
+                LDA       #$0013
                 STA       $7F4000,X    ;Write new Cursor
   Skip_Pos_Upd: Accu_8bit
 .endm

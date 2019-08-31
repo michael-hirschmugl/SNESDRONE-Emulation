@@ -98,7 +98,7 @@ Start:          InitSNES               ;Initialize the SNES. (snes_init.asm)
                 LoadPalette BG_Palette, 0, 4  ;BG_Palette is in "palette.inc", 0 is the index of the 
                                               ;first color, 4 is the amount of color to write.
                 LoadPalette BG_Palette, 31, 4 ;BG_Palette for BG2
-                LoadTiles   Tiles, $0000, 192 ;Tiles is in "tiles.inc", $0000 is the address in
+                LoadTiles   Tiles, $0000, 448 ;Tiles is in "tiles.inc", $0000 is the address in
                                               ;VRAM to start writing data, 192 is the amount of data in bytes.
 
                 STZ       $2105        ;Screen mode register (BG mode 1, 8x8 tiles)
@@ -217,6 +217,9 @@ RAM_LOOP:
                 ;Accu_8bit
                 
                 CURSOR_POS_UPDATE
+
+                UPDATE_FREQUENCY_GUI
+
 
 ;---------------|---------|------------|-------------------------------------
 ; Everything that's coming up, needs the MCU
