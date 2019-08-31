@@ -258,3 +258,239 @@
                 INA
                 STA       $7F42B8
 .endm
+
+;---------------|---------|------------|-------------------------------------
+;
+; 
+;
+;---------------|---------|------------|-------------------------------------
+.macro  PREP_VOL_1_PROD
+                LDA       #$0F
+                STA       $4202
+                LDA       $001000
+                STA       $4203
+.endm
+
+;---------------|---------|------------|-------------------------------------
+;
+; 
+;
+;---------------|---------|------------|-------------------------------------
+.macro  PREP_VOL_2_PROD
+                LDA       #$0F
+                STA       $4202
+                LDA       $001010
+                STA       $4203
+.endm
+
+;---------------|---------|------------|-------------------------------------
+;
+; 
+;
+;---------------|---------|------------|-------------------------------------
+.macro  PREP_VOL_3_PROD
+                LDA       #$0F
+                STA       $4202
+                LDA       $001020
+                STA       $4203
+.endm
+
+;---------------|---------|------------|-------------------------------------
+;
+; 
+;
+;---------------|---------|------------|-------------------------------------
+.macro  PREP_VOL_4_PROD
+                LDA       #$0F
+                STA       $4202
+                LDA       $001030
+                STA       $4203
+.endm
+
+;---------------|---------|------------|-------------------------------------
+;
+; 
+;
+;---------------|---------|------------|-------------------------------------
+.macro  UPDATE_VOL_1
+                Accu_16bit
+                LDA       $004216
+                LSR
+                LSR
+                LSR
+                LSR
+                LSR
+                LSR
+                LSR
+                Accu_8bit
+                STA       $00100B
+
+                LDY       #0
+                LDX       #$0682
+  vol_1_loop:   Accu_8bit
+                LDA       #$11
+                STA       $7F4000,X
+                Accu_16bit
+                TXA
+                SEC
+                SBC       #$40
+                TAX
+                Accu_8bit
+                INY
+                TYA
+                CMP       $00100B
+                BNE       vol_1_loop
+  vol_1_zer0:   LDA       #$00
+                STA       $7F4000,X
+                Accu_16bit
+                TXA
+                SEC
+                SBC       #$40
+                TAX
+                Accu_8bit
+                INY
+                TYA
+                CMP       #15
+                BNE       vol_1_zer0
+.endm
+
+;---------------|---------|------------|-------------------------------------
+;
+; 
+;
+;---------------|---------|------------|-------------------------------------
+.macro  UPDATE_VOL_2
+                Accu_16bit
+                LDA       $004216
+                LSR
+                LSR
+                LSR
+                LSR
+                LSR
+                LSR
+                LSR
+                Accu_8bit
+                STA       $00101B
+
+                LDY       #0
+                LDX       #$0692
+  vol_2_loop:   Accu_8bit
+                LDA       #$11
+                STA       $7F4000,X
+                Accu_16bit
+                TXA
+                SEC
+                SBC       #$40
+                TAX
+                Accu_8bit
+                INY
+                TYA
+                CMP       $00101B
+                BNE       vol_2_loop
+  vol_2_zer0:   LDA       #$00
+                STA       $7F4000,X
+                Accu_16bit
+                TXA
+                SEC
+                SBC       #$40
+                TAX
+                Accu_8bit
+                INY
+                TYA
+                CMP       #15
+                BNE       vol_2_zer0
+.endm
+
+;---------------|---------|------------|-------------------------------------
+;
+; 
+;
+;---------------|---------|------------|-------------------------------------
+.macro  UPDATE_VOL_3
+                Accu_16bit
+                LDA       $004216
+                LSR
+                LSR
+                LSR
+                LSR
+                LSR
+                LSR
+                LSR
+                Accu_8bit
+                STA       $00102B
+
+                LDY       #0
+                LDX       #$06A2
+  vol_3_loop:   Accu_8bit
+                LDA       #$11
+                STA       $7F4000,X
+                Accu_16bit
+                TXA
+                SEC
+                SBC       #$40
+                TAX
+                Accu_8bit
+                INY
+                TYA
+                CMP       $00102B
+                BNE       vol_3_loop
+  vol_3_zer0:   LDA       #$00
+                STA       $7F4000,X
+                Accu_16bit
+                TXA
+                SEC
+                SBC       #$40
+                TAX
+                Accu_8bit
+                INY
+                TYA
+                CMP       #15
+                BNE       vol_3_zer0
+.endm
+
+;---------------|---------|------------|-------------------------------------
+;
+; 
+;
+;---------------|---------|------------|-------------------------------------
+.macro  UPDATE_VOL_4
+                Accu_16bit
+                LDA       $004216
+                LSR
+                LSR
+                LSR
+                LSR
+                LSR
+                LSR
+                LSR
+                Accu_8bit
+                STA       $00103B
+
+                LDY       #0
+                LDX       #$06B2
+  vol_4_loop:   Accu_8bit
+                LDA       #$11
+                STA       $7F4000,X
+                Accu_16bit
+                TXA
+                SEC
+                SBC       #$40
+                TAX
+                Accu_8bit
+                INY
+                TYA
+                CMP       $00103B
+                BNE       vol_4_loop
+  vol_4_zer0:   LDA       #$00
+                STA       $7F4000,X
+                Accu_16bit
+                TXA
+                SEC
+                SBC       #$40
+                TAX
+                Accu_8bit
+                INY
+                TYA
+                CMP       #15
+                BNE       vol_4_zer0
+.endm

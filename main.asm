@@ -36,7 +36,7 @@
 ;---------------|---------|------------|-------------------------------------
 .bank 0
 .org 8192
-.section "VBlank" force
+.section "VBlank" forced
 VBlank:         NMIIN                  ;Saves all registers
                                        ;A=8bit, X/Y=16bit
 
@@ -98,8 +98,10 @@ Start:          InitSNES               ;Initialize the SNES. (snes_init.asm)
                 LoadPalette BG_Palette, 0, 4  ;BG_Palette is in "palette.inc", 0 is the index of the 
                                               ;first color, 4 is the amount of color to write.
                 LoadPalette BG_Palette, 31, 4 ;BG_Palette for BG2
+                ;LoadPalette Title_Palette, 64, 4 ;Palette for title
                 LoadTiles   Tiles, $0000, 448 ;Tiles is in "tiles.inc", $0000 is the address in
                                               ;VRAM to start writing data, 192 is the amount of data in bytes.
+                ;LoadTiles   Title_Tiles, $1000, 768
 
                 STZ       $2105        ;Screen mode register (BG mode 1, 8x8 tiles)
                 LDA       #$04         ;Value for BG1 Tile Map Location (incremented in $0400 words, so we start at $0400)
@@ -109,8 +111,13 @@ Start:          InitSNES               ;Initialize the SNES. (snes_init.asm)
                 LDA       #$0C
                 STA       $2108
 
+                ;LDA       #$14
+                ;STA       $2109
+
                 STZ       $210B        ;BG1 & BG2 Character location: Set BG1's Character VRAM offset to $0000 (word address)
-                STZ       $210C        ;BG3 & BG4 Character Location: Set BG3's Character VRAM offset to $0000 (word address)
+                STZ       $210C
+                ;LDA       #$01
+                ;STA       $210C        ;BG3 & BG4 Character Location: Set BG3's Character VRAM offset to $0000 (word address)
 
                 ;LDA       #$01         ;Value for Main screen designation Register (enable BG1)
                 LDA       #$03
@@ -200,14 +207,31 @@ Start:          InitSNES               ;Initialize the SNES. (snes_init.asm)
 .org 9216
 .section "RAM_LOOP" force
 RAM_LOOP:       
-                
 
                 ;These are macros that launch routines stored in RAM (by branching there)
                 ;The routines write values from the DSP buffer in RAM to the DSP registers
+
+                PREP_VOL_1_PROD
+
                 UPDATE_DSP_CH1_REGS    ; launches ch1_go_ram from dsp_ram_routines.asm 
+
+                UPDATE_VOL_1
+                PREP_VOL_2_PROD
+
                 UPDATE_DSP_CH2_REGS    ; launches ch2_go_ram from dsp_ram_routines.asm 
+
+                UPDATE_VOL_2
+                PREP_VOL_3_PROD
+
                 UPDATE_DSP_CH3_REGS    ; launches ch3_go_ram from dsp_ram_routines.asm 
+
+                UPDATE_VOL_3
+                PREP_VOL_4_PROD
+
                 UPDATE_DSP_CH4_REGS    ; launches ch4_go_ram from dsp_ram_routines.asm 
+
+                UPDATE_VOL_4
+
                 UPDATE_DSP_MASTER_CH_REGS ; Only Volume is written! Key ON and all else must be done when
                                           ; user needs.
 
@@ -219,7 +243,6 @@ RAM_LOOP:
                 CURSOR_POS_UPDATE
 
                 UPDATE_FREQUENCY_GUI
-
 
 ;---------------|---------|------------|-------------------------------------
 ; Everything that's coming up, needs the MCU
