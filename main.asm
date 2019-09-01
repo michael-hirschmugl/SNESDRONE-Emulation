@@ -98,10 +98,10 @@ Start:          InitSNES               ;Initialize the SNES. (snes_init.asm)
                 LoadPalette BG_Palette, 0, 4  ;BG_Palette is in "palette.inc", 0 is the index of the 
                                               ;first color, 4 is the amount of color to write.
                 LoadPalette BG_Palette, 31, 4 ;BG_Palette for BG2
-                ;LoadPalette Title_Palette, 64, 4 ;Palette for title
+                LoadPalette Title_Palette, 64, 4 ;Palette for title
                 LoadTiles   Tiles, $0000, 448 ;Tiles is in "tiles.inc", $0000 is the address in
                                               ;VRAM to start writing data, 192 is the amount of data in bytes.
-                ;LoadTiles   Title_Tiles, $1000, 768
+                LoadTiles   Title_Tiles, $1000, 768
 
                 STZ       $2105        ;Screen mode register (BG mode 1, 8x8 tiles)
                 LDA       #$04         ;Value for BG1 Tile Map Location (incremented in $0400 words, so we start at $0400)
@@ -111,21 +111,21 @@ Start:          InitSNES               ;Initialize the SNES. (snes_init.asm)
                 LDA       #$0C
                 STA       $2108
 
-                ;LDA       #$14
-                ;STA       $2109
+                LDA       #$14
+                STA       $2109
 
                 STZ       $210B        ;BG1 & BG2 Character location: Set BG1's Character VRAM offset to $0000 (word address)
-                STZ       $210C
-                ;LDA       #$01
-                ;STA       $210C        ;BG3 & BG4 Character Location: Set BG3's Character VRAM offset to $0000 (word address)
+                ;STZ       $210C
+                LDA       #$01
+                STA       $210C        ;BG3 & BG4 Character Location: Set BG3's Character VRAM offset to $0000 (word address)
 
                 ;LDA       #$01         ;Value for Main screen designation Register (enable BG1)
-                LDA       #$03
+                LDA       #$07
                 STA       $212C        ;Main screen designation Register
 
                 ;(video_init.asm)
                 LoadTiles   Tilemap, $0400, 2048
-                ;LoadTiles   Tilemap, $0C00, 2048
+                LoadTiles   Title_Tilemap, $1400, 2048
                 
                 LDA       #$0F
                 STA       $2100        ;Turn on screen, full Brightnes
@@ -194,6 +194,14 @@ Start:          InitSNES               ;Initialize the SNES. (snes_init.asm)
 .include "palette.inc"
 .include "tiles.inc"
 .include "tilemap.inc"
+
+.ends
+
+.bank 0
+.org 15360
+.section "Title_Tiles" force
+
+.include "title_tiles.inc"
 
 .ends
 
