@@ -193,6 +193,15 @@ master_go:      LDA       $00
                 JSR       write_dsp
                 RTS
 
+                LDA       $00
+                XBA
+                LDA       $108A         ; FLG Register
+                XBA
+                ORA       #$006C        ; FLG Register
+                TAX
+                JSR       write_dsp
+                RTS
+
 .ends
 
 ;---------------|---------|------------|-------------------------------------

@@ -170,4 +170,6 @@
                 STA       $1088
                 LDA       #$00         ;Master - Echo Vol R
                 STA       $1089
+                LDA       #$33         ;FLG Register
+                STA       $108A
 .endm

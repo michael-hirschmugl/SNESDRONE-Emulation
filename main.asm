@@ -222,7 +222,7 @@ Start:          InitSNES               ;Initialize the SNES. (snes_init.asm)
 RAM_LOOP:       
 
                 ;These are macros that launch routines stored in RAM (by branching there)
-                ;The "UPDATE_DSP_CHX_REGS" routines write values from the DSP buffer in RAM to the DSP registers.
+                ;The "UPDATE_DSP_CHX_REGS" routines write ALL (except for master) values from the DSP buffer in RAM to the DSP registers.
                 ;(dsp_ram_routines.asm)
                 ;"PREP_VOL_1_PROD" and "UPDATE_VOL_X" generate the volume bar.
                 ;(misc.asm)
@@ -238,15 +238,13 @@ RAM_LOOP:
                 PREP_VOL_4_PROD
                 UPDATE_DSP_CH4_REGS    ; launches ch4_go_ram from dsp_ram_routines.asm 
                 UPDATE_VOL_4
-                UPDATE_DSP_MASTER_CH_REGS ; Only Volume is written! Key ON and all else must be done when
-                                          ; user needs.
+                UPDATE_DSP_MASTER_CH_REGS ; Volume, FLG and Noise are written.
 
                 ;(controller_input.asm)
                 READ_CONTROLLER_1      ; Reads the controller input into registers $000F00
                 JUMP_INTERFACE         ; moves the cursor virtually
                 BUTTON_A_THINGS        ; Switches channels ON and OFF
                 WAVECHANGER            ; Changes waveform of each channel
-;                NOISESWITCHER
                 ;Accu_8bit
                 
                 CURSOR_POS_UPDATE      ; moves the cursor visually (controller_input.asm)

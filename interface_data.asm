@@ -13,7 +13,7 @@
 ; 0x0000 Next address for RIGHT
 ; 0x0000 Location in Tilemap (bank is always 7F)
 ; 0x00   Only for swapping waveforms: corresponding channel waveform RAM buffer address
-; 0x00   Only for swapping waveforms: Wave Number
+; 0x00   Only for swapping waveforms: Wave Number (for noise: bit for noise channel)
 ;
 ;----------------------------------------------------------------------------
 .bank 0

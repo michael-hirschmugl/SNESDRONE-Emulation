@@ -300,7 +300,6 @@ Wave_Change:    LDA       $000F02      ;Joy1Press Buffer
                 Accu_8bit
                 RTS
   Change_The_Wave:
-                ;CLC
                 TAX
                 LDA       $7F000C,X  ;Load corresponding code for register and value
                 Accu_8bit
@@ -311,19 +310,12 @@ Wave_Change:    LDA       $000F02      ;Joy1Press Buffer
                 REP       #%00010000
                 RTS
   Turn_Noise_ON:
-                ;Accu_16bit
-                ;LDA       #0
-                ;Accu_8bit
-                ;LDA       $001084
-                ;Accu_16bit
-                ;XBA
-                ;ORA       #$003D
-                ;TAX
+                TAX
+                LDA       $7F000C,X  ;Load corresponding code for noise channel
                 Accu_8bit
-                LDX       #$3D03
-                PER       retu03
-                BRL       write_dsp_ram
-                retu03:     NOP
+                AND       #$0F
+                EOR       $001084    ;Noise register buffer in RAM
+                STA       $001084
                 RTS
 
 
