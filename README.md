@@ -20,8 +20,12 @@ It's me working on the SNES firmware (software?)  that will have to go onto the 
 I use BSNES, since this project is very hardware based and uses some tricks that only real hardware can do. BSNES acts the most like real hardware. For assembly I am using WLA-65816.
 
 ## How far is it?
-* Sound is working (4 out of 8 oscillators, only one waveform, no efx)
-* GUI is working, well the basics at least. It's possible to turn channels on and off, display pitch value in hex and a bar for volume per channel. Volume is only for left stereo channel though.
+* Sound is working (4 out of 8 oscillators, 4 waveforms to choose (sine, rect, triangle, saw), no efx)
+* GUI is working, well the basics at least. It's possible to turn channels on and off, choose a waveform, display pitch value in hex and a bar for volume per channel. Volume is only for left stereo channel though.
 
 ## What's next?
-* Change Wave in GUI
+* Make noise output available in GUI
+* Smooth frequency changes
+* No division by zero when reading volume
+* Better frequency range
+* Read and change volume
