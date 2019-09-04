@@ -337,6 +337,21 @@ master_go_ram:  LDA       $00
                 BRL       write_dsp_ram
                 ret28:     NOP
 
+                LDX       #$3F6C        ; Noise Frequency
+                PER       retu29
+                BRL       write_dsp_ram
+                retu29:     NOP
+
+                LDA       $00
+                XBA
+                LDA       $1084
+                XBA
+                ORA       #$003D        ; Noise Enable
+                TAX
+                PER       retu28
+                BRL       write_dsp_ram
+                retu28:     NOP
+
                 RTS
 
 ;---------------|---------|------------|-------------------------------------

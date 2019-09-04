@@ -12,7 +12,8 @@
 ; 00:1000-00:108F  DSP Register Buffer
 ; 00:0F00          Controller Input Buffer (max. 0100h 256 bytes)
 ; 7F:1000-7F:11C2  Interface Data
-; 7F:4000-7F:4800  Tilemap Buffer
+; 7F:4000-7F:4800  Tilemap Buffer (this buffer is written in VRAM at every VBlank and
+;                  is used for character manipulation on screen)
 ;
 ;---------------|---------|------------|-------------------------------------
 .include "header.inc"
@@ -40,6 +41,7 @@
 VBlank:         NMIIN                  ;Saves all registers
                                        ;A=8bit, X/Y=16bit
 
+                ;Update of tilemap in VRAM via DMA
                 LDA       #%10000000   ;When writing to VRAM, increment address by 1 after writing
                 STA       $2115        ;Video Port Control Register
 
@@ -67,8 +69,6 @@ VBlank:         NMIIN                  ;Saves all registers
                 LDA       #$01         ;Loads the value that is needed to initiate DMA transfer on the first channel.
                 STA       $420B        ;DMA Enable Register
 
-                
-
                 NMIOUT
                 RTI
 .ends
@@ -95,13 +95,19 @@ VBlank:         NMIIN                  ;Saves all registers
 Start:          InitSNES               ;Initialize the SNES. (snes_init.asm)
 
                 ;(video_init.asm)
-                LoadPalette BG_Palette, 0, 4  ;BG_Palette is in "palette.inc", 0 is the index of the 
-                                              ;first color, 4 is the amount of color to write.
-                LoadPalette BG_Palette, 31, 4 ;BG_Palette for BG2
-                LoadPalette Title_Palette, 64, 4 ;Palette for title
-                LoadTiles   Tiles, $0000, 448 ;Tiles is in "tiles.inc", $0000 is the address in
-                                              ;VRAM to start writing data, 192 is the amount of data in bytes.
-                LoadTiles   Title_Tiles, $1000, 768
+                ;Load palettes for backgrounds
+                ;stored in section "CharacterData"
+                LoadPalette BG_Palette,     0,      4  ;BG_Palette is in "palette.inc", 0 is the index of the 
+                                                       ;first color, 4 is the amount of color to write.
+                LoadPalette BG_Palette,    31,      4  ;BG_Palette for BG2
+                LoadPalette Title_Palette, 64,      4  ;Palette for title
+
+                ;Load character tiles
+                ;stored in section "CharacterData"
+                LoadTiles   Tiles,         $0000, 448  ;Tiles is in "tiles.inc", $0000 is the address in
+                                                       ;VRAM to start writing data, 192 is the amount of data in bytes.
+                ;stored in section "Title_Tiles"
+                LoadTiles   Title_Tiles,   $1000, 768  ;(title_tiles.inc)
 
                 STZ       $2105        ;Screen mode register (BG mode 1, 8x8 tiles)
                 LDA       #$04         ;Value for BG1 Tile Map Location (incremented in $0400 words, so we start at $0400)
@@ -115,15 +121,14 @@ Start:          InitSNES               ;Initialize the SNES. (snes_init.asm)
                 STA       $2109
 
                 STZ       $210B        ;BG1 & BG2 Character location: Set BG1's Character VRAM offset to $0000 (word address)
-                ;STZ       $210C
                 LDA       #$01
-                STA       $210C        ;BG3 & BG4 Character Location: Set BG3's Character VRAM offset to $0000 (word address)
+                STA       $210C        ;BG3 & BG4 Character Location: Set BG3's Character VRAM offset to $1000 (word address)
 
-                ;LDA       #$01         ;Value for Main screen designation Register (enable BG1)
-                LDA       #$07
+                LDA       #$07         ;Value for Main screen designation Register (enable BG1,BG2,BG3)
                 STA       $212C        ;Main screen designation Register
 
                 ;(video_init.asm)
+                ;Tilemaps stored in section "CharacterData"
                 LoadTiles   Tilemap, $0400, 2048
                 LoadTiles   Title_Tilemap, $1400, 2048
                 
@@ -134,7 +139,7 @@ Start:          InitSNES               ;Initialize the SNES. (snes_init.asm)
                 ;(dsp_stuff.asm)
                 JSR       spc_wait_boot
                 
-                ;Upload sample to SPC at $200
+                ;Upload samples to SPC at $200
                 ;(dsp_stuff.asm)
                 LDY       #$0200
                 JSR       spc_begin_upload
@@ -143,7 +148,7 @@ Start:          InitSNES               ;Initialize the SNES. (snes_init.asm)
                 CPY       #sample_end - sample
                 BNE       loop
   
-                ;Init DSP register buffer
+                ;Init DSP register buffer at RAM address $001000
                 ;These macros specify the init values for the registers.
                 ;(macros dsp_init.asm)
                 InitDSPch1
@@ -161,7 +166,7 @@ Start:          InitSNES               ;Initialize the SNES. (snes_init.asm)
                 ;"VBLANK" is the NMI routine, which is copied into the first page of RAM, right
                 ;after the Stack Pointer
                 ;       goes to RAM: 00:1E00
-                ;"INTERFACE" is the map for the GUI
+                ;"INTERFACE" is the map for the GUI, not the routines for reading the controller (those are still in LOOP)
                 ;       goes to RAM: 7F:1000
                 Accu_16bit
                 ROM_2_RAM_LOOP
@@ -175,7 +180,7 @@ Start:          InitSNES               ;Initialize the SNES. (snes_init.asm)
                 JSR       master_go
 
                 STZ       $4016        ;Write a byte of nothing to $4016 (old style joypad register)
-                EnableNMIandAutoJoypad
+                EnableNMIandAutoJoypad ;(misc.asm)
                 NMIIN
                 JML       $7F2400      ;Jump into main Loop in RAM
 
@@ -217,40 +222,36 @@ Start:          InitSNES               ;Initialize the SNES. (snes_init.asm)
 RAM_LOOP:       
 
                 ;These are macros that launch routines stored in RAM (by branching there)
-                ;The routines write values from the DSP buffer in RAM to the DSP registers
-
-                PREP_VOL_1_PROD
-
+                ;The "UPDATE_DSP_CHX_REGS" routines write values from the DSP buffer in RAM to the DSP registers.
+                ;(dsp_ram_routines.asm)
+                ;"PREP_VOL_1_PROD" and "UPDATE_VOL_X" generate the volume bar.
+                ;(misc.asm)
+                PREP_VOL_1_PROD        ; Stores the volume value in the multiplication register
                 UPDATE_DSP_CH1_REGS    ; launches ch1_go_ram from dsp_ram_routines.asm 
-
-                UPDATE_VOL_1
+                UPDATE_VOL_1           ; Fetches the multiplication product and writes into the tilemap buffer
                 PREP_VOL_2_PROD
-
                 UPDATE_DSP_CH2_REGS    ; launches ch2_go_ram from dsp_ram_routines.asm 
-
                 UPDATE_VOL_2
                 PREP_VOL_3_PROD
-
                 UPDATE_DSP_CH3_REGS    ; launches ch3_go_ram from dsp_ram_routines.asm 
-
                 UPDATE_VOL_3
                 PREP_VOL_4_PROD
-
                 UPDATE_DSP_CH4_REGS    ; launches ch4_go_ram from dsp_ram_routines.asm 
-
                 UPDATE_VOL_4
-
                 UPDATE_DSP_MASTER_CH_REGS ; Only Volume is written! Key ON and all else must be done when
                                           ; user needs.
 
-                READ_CONTROLLER_1
-                JUMP_INTERFACE
-                BUTTON_A_THINGS
+                ;(controller_input.asm)
+                READ_CONTROLLER_1      ; Reads the controller input into registers $000F00
+                JUMP_INTERFACE         ; moves the cursor virtually
+                BUTTON_A_THINGS        ; Switches channels ON and OFF
+                WAVECHANGER            ; Changes waveform of each channel
+;                NOISESWITCHER
                 ;Accu_8bit
                 
-                CURSOR_POS_UPDATE
+                CURSOR_POS_UPDATE      ; moves the cursor visually (controller_input.asm)
 
-                UPDATE_FREQUENCY_GUI
+                UPDATE_FREQUENCY_GUI   ; displays pitch values in the GUI (misc.asm)
 
 ;---------------|---------|------------|-------------------------------------
 ; Everything that's coming up, needs the MCU

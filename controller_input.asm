@@ -278,7 +278,56 @@ Button_A_Rtn:   LDA       $000F02      ;Joy1Press Buffer
                 BRL       write_dsp_ram
                 ret88:     NOP
                 RTS
-                
+
+;---------------|---------|------------|-------------------------------------
+;
+; 
+; 
+;
+;---------------|---------|------------|-------------------------------------
+Wave_Change:    LDA       $000F02      ;Joy1Press Buffer
+                CMP       #$80         ;#$80 = Button A
+                BEQ       Work_Btn_A_Wave
+                RTS
+  Work_Btn_A_Wave:   ;Button A Pressed, on one of the Wave Switches?
+                Accu_16bit
+                LDA       $7F11C0  ; Load current cursor location
+                CLC
+                CMP       #4475  ;noise area?
+                BCS       Turn_Noise_ON
+                CMP       #4251  ;Wave Change area?
+                BCS       Change_The_Wave
+                Accu_8bit
+                RTS
+  Change_The_Wave:
+                ;CLC
+                TAX
+                LDA       $7F000C,X  ;Load corresponding code for register and value
+                Accu_8bit
+                SEP       #%00010000
+                TAX
+                XBA
+                STA       $001000,X
+                REP       #%00010000
+                RTS
+  Turn_Noise_ON:
+                ;Accu_16bit
+                ;LDA       #0
+                ;Accu_8bit
+                ;LDA       $001084
+                ;Accu_16bit
+                ;XBA
+                ;ORA       #$003D
+                ;TAX
+                Accu_8bit
+                LDX       #$3D03
+                PER       retu03
+                BRL       write_dsp_ram
+                retu03:     NOP
+                RTS
+
+
+
 .ends
 
 ;---------------|---------|------------|-------------------------------------
@@ -312,6 +361,17 @@ Button_A_Rtn:   LDA       $000F02      ;Joy1Press Buffer
                 PER       ret37
                 BRL       Button_A_Rtn
                 ret37:     NOP
+.endm
+
+;---------------|---------|------------|-------------------------------------
+;
+;
+;
+;---------------|---------|------------|-------------------------------------
+.macro  WAVECHANGER
+                PER       retu01
+                BRL       Wave_Change
+                retu01:     NOP
 .endm
 
 ;---------------|---------|------------|-------------------------------------
