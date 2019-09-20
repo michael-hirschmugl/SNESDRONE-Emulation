@@ -1,6 +1,8 @@
 # SNESDRONE emulator ROM image (V0.1.1)
 A ROM image for the Super NES to control the internal wavetable synthesizer chip (SONY DSP) for profit.
 
+![alt text](https://github.com/hirschmensch/SNESDRONE-Emulation/blob/master/screen.png "Example")
+
 ## What?
 Yes! Well, actually, no. There's no profit in this. I'm doing this little hardware project where I'm building a SNES cart with potentiometers and an ARM co-processor, that exposes the internal audio hardware directly to the user.
 
