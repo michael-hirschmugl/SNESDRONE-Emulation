@@ -221,6 +221,22 @@ Start:          InitSNES               ;Initialize the SNES. (snes_init.asm)
 .section "RAM_LOOP" force
 RAM_LOOP:       
 
+;---------------|---------|------------|-------------------------------------
+; Everything that's coming up, needs the MCU
+;---------------|---------|------------|-------------------------------------
+
+                ;Fetches values from MCU and stores them in
+                ;the DSP buffer in RAM (00:1000)
+                ;(macro dsp_stuff.asm)
+                ;Please don't ask me why this is in dsp_stuff.asm
+                UPDATE_DSP_RAM_REGS
+                ; INSIDE NMI ROUTINE???
+
+                WAI
+;---------------|---------|------------|-------------------------------------
+; MCU is free
+;---------------|---------|------------|-------------------------------------
+
                 ;These are macros that launch routines stored in RAM (by branching there)
                 ;The "UPDATE_DSP_CHX_REGS" routines write ALL (except for master) values from the DSP buffer in RAM to the DSP registers.
                 ;(dsp_ram_routines.asm)
@@ -251,19 +267,5 @@ RAM_LOOP:
 
                 UPDATE_FREQUENCY_GUI   ; displays pitch values in the GUI (misc.asm)
 
-;---------------|---------|------------|-------------------------------------
-; Everything that's coming up, needs the MCU
-;---------------|---------|------------|-------------------------------------
-
-                ;Fetches values from MCU and stores them in
-                ;the DSP buffer in RAM (00:1000)
-                ;(macro dsp_stuff.asm)
-                ;Please don't ask me why this is in dsp_stuff.asm
-                UPDATE_DSP_RAM_REGS
-                ; INSIDE NMI ROUTINE???
-
-                WAI
-;---------------|---------|------------|-------------------------------------
-
-                JMP       $2400
+                JML       $7F2400
 .ends
